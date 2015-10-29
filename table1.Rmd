@@ -1,0 +1,160 @@
+---
+title: "Table 1"
+author: ""
+date: "October 29, 2015"
+output: html_document
+---
+
+
+```{r global_options, include=F}
+# see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      echo=F, warning=FALSE, message=FALSE, 
+                      results='hide')
+
+require(knitr)
+library(reshape2)
+library(ggplot2)
+library(car)
+library(plyr)
+library(tables)
+library(data.table)
+library(htmlTable)
+
+library(ztable)
+options(ztable.type="html")
+
+
+```
+
+```{r}
+# Read in data
+
+setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
+
+dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-10-29.csv",
+         head=T,
+         sep=",")
+
+dim(dat.1)
+```
+
+```{r}
+
+# alter names from gravity form field labels -- too long
+
+rownames(dat.1)
+length(colnames(dat.1))
+
+cnames = colnames(dat.1)
+cnames.short = sapply(cnames, function(x) {substr(x,0,40)})
+cnames.short.2 = paste("field", 1:length(cnames.short), sep="")
+
+cnames.short.2[1:10]
+
+colnames(dat.1) = cnames.short.2
+
+sapply(dat.1, class) # look at class values for each field
+```
+
+```{r}
+# list of col names and field description from gravity form
+var.vals = cbind(cnames.short, cnames.short.2)
+rownames(var.vals)=NULL
+var.vals[1:25,]
+```
+
+```{r}
+
+### Table of revised data column names and description
+kable(var.vals)
+```
+
+
+```{r}
+
+# Look at fields for Table 1: first author, year, study population,
+# comparison groups, Sample size, mean age (sd), age range, % women, % AA
+# ....................................
+
+# Notes: author name field (4)
+# race (23) needs cleaning
+# Need to go back and see which ones are 'include' from time before
+# addition of the include field (quite a few were done before that
+# field was added.
+
+# only include those that were marked as include
+dat.1.t1 = dat.1[dat.1$field7=="No",
+                 colnames(dat.1) %in% c("field4", "field6", 
+                                         paste("field", c(10:14), sep=""),
+                                         paste("field", c(18:23), sep=""))]
+
+colnames(dat.1.t1) = c("author", "year", 
+                       "clinic.amb", "clinic.home", "home.amb", 
+                       "clinic.aoffice", "aoffice.amb",
+                       "population", "mean.age",  "min.age", "max.age",
+                       "female", "race")
+sapply(dat.1.t1[,3:7], levels)
+
+# 
+# # make comparison fields binary
+# dat.1.t1[,3:7] = apply(dat.1.t1[,3:7], 2, 
+#                        function(x) {ifelse(x=="",0,1)} )
+
+dat.1.t1[,3:7] = apply(dat.1.t1[,3:7], 2, 
+                       function(x) {gsub("Comparison of ", "", x)})
+
+
+dat.1.t1$comparison.groups = with(dat.1.t1,
+                                  paste(clinic.amb,
+                                        clinic.home,
+                                        home.amb,
+                                        clinic.aoffice,
+                                        aoffice.amb,
+                                        sep="<p>"))
+dat.1.t1$comparison.groups
+
+
+dat.1.t1$race
+dat.1.t1$author
+dat.1.t1$min.age
+dat.1.t1$max.age
+dat.1.t1$mean.age
+
+names(dat.1.t1)
+
+
+test = ifelse(is.na(dat.1.t1$min.age)==T,1,0)
+test
+
+dat.1.t1 = within(dat.1.t1, {
+  author.year = paste(author, year, sep=", ")
+  age.range = ifelse(is.na(min.age)==T,
+                     paste(round(mean.age,0)), 
+                     paste(round(mean.age,0), " (", 
+                           round(min.age,0), ", ", 
+                           round(max.age,0), ")"))
+  female.2 = paste(round(female,0))
+  })
+
+
+names(dat.1.t1)
+
+table1.dat = data.frame(dat.1.t1[,c(17, 8, 14, 16, 15, 13)],
+                        row.names=NULL)
+
+colnames(table1.dat) = c("First author, Year",
+                         "Study population",
+                         "Comparison groups",
+                         "Age (mean), age range", 
+                         "Female (%)",
+                         "African American (%)")
+```
+
+```{r, results='asis'}
+  ztable(table1.dat,
+         zebra=2,
+         zebra.color = "platinum")
+
+```
+
