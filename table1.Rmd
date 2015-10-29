@@ -155,6 +155,5 @@ colnames(table1.dat) = c("First author, Year",
   ztable(table1.dat,
          zebra=2,
          zebra.color = "platinum")
-
 ```
 
