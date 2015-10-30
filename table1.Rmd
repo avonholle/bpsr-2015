@@ -152,6 +152,7 @@ colnames(table1.dat) = c("First author, Year",
 rownames(table1.dat)=NULL
 ```
 
+
 ```{r, results='asis'}
     z=ztable(table1.dat,
          zebra=2,
