@@ -149,11 +149,13 @@ colnames(table1.dat) = c("First author, Year",
                          "Age (mean), age range", 
                          "Female (%)",
                          "African American (%)")
+rownames(table1.dat)=NULL
 ```
 
 ```{r, results='asis'}
-  ztable(table1.dat,
+    z=ztable(table1.dat,
          zebra=2,
          zebra.color = "platinum")
+  update_ztable(z, include.rownames=F)
 ```
 
