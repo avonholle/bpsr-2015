@@ -17,7 +17,7 @@ options(ztable.type="html")
 # Read in data
 setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
-dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-10-29.csv",
+dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-10-29-rev.csv", # this particular file has hashtags instead of | to delimit values within one entry item
          head=T,
          sep=",")
 
