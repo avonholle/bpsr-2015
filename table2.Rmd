@@ -29,62 +29,40 @@ read_chunk('make-data.R') # call program that forms data frame
 
 ```{r part1} 
 # Read in data, dat.1, from the make-data.R program in options
+# Also make a long form data frame, dat.ts.long, for tables 2, 4, and 6
 ```
 
-```{r subset1}
-# subset data for table 2 and data handling
 
-# only include those that were marked as include
-dat.t2 = dat.1[dat.1$field7=="No",
-                 colnames(dat.1) %in% c("field4", "field6", "field7",
-                                        "field14",
-                                        "field49", "field55")                                ]
+```{r prep2}
+# prep data for "Table 2. Comparing Mean Office BP to Mean Ambulatory BP"
+names(dat.ts.long)
 
-# Note: daytime and nighttime abpm means were not on form.
-#       Need to (add field?) go back and get that information
+compare.t2 = dat.ts.long[dat.ts.long$clinic.amb.yes==1 & 
+                          dat.ts.long$type.descrip %in% c("clinic", "amb"), ]
 
-colnames(dat.t2) = c("author", "year", "include", 
-                     "amb.office",
-                       "num.meas", "mean.meas")
-head(dat.t2)
+dim(compare.t2)
 
-dat.t2 = within(dat.t2, {
-    author.year = paste(author, year, sep=", ")
-    
-    # number of office bp measurements
-    # order of entries should be clinic|home|ambulatory|other
-    # see bpsr-full-review-preview-online-form-20151101-p3.pdf, a copy of the online form
+compare.t2[,colnames(compare.t2) %in% c("author.year", 
+                                      "type.measure",
+                                      "type.descrip",
+                                      "value")]
 
-    office.mean = unlist(strsplit(as.character(dat.t2$mean.meas), split="#"))[4] # Note: assuming other is office but may not be. Will have to go back and double check the values in the papers.
-    amb.mean = unlist(strsplit(as.character(dat.t2$mean.meas), split="#"))[3]
-    
-    # number of measurements
-    office.num = unlist(strsplit(as.character(dat.t2$num.meas), split="#"))[4]
-    amb.num = unlist(strsplit(as.character(dat.t2$num.meas), split="#"))[3]
-    
-    amb.office.yes = ifelse(amb.office=="",0,1)
-})
+dt2 = dcast(compare.t2, author.year ~ type.descrip + type.measure, 
+      value.var="value", na.rm=T)
 
-dat.t2.sub = dat.t2[dat.t2$amb.office.yes==1,
-                    colnames(dat.t2) %in% c("author.year", "office.mean",
-                                            "amb.mean", "office.num", "amb.num",
-                                            "amb.office.yes")]
-colnames(dat.t2.sub)
-dat.t2.sub = dat.t2.sub[,c(6, 3, 5, 2, 4)]
-colnames(dat.t2.sub)
-
-colnames(dat.t2.sub) = c("First author, Year",
-                         "Office (n)",
-                         "Office (mean)",
-                         "Ambulatory (n)",
-                         "Ambulatory (mean)")
-dat.t2.sub
-
+class(dt2)
+colnames(dt2) = c("Author, year", "Count", "Mean",
+                  "Count", "Mean")
 ```
 
 ```{r, results='asis'}
-    z=ztable(dat.t2.sub,
+
+    cgroup=c("", "Ambulatory", "Clinic")
+    n.cgroup = c(1,2,2)
+    z=ztable(dt2,
          zebra=2,
          zebra.color = "platinum")
-  update_ztable(z, include.rownames=F)
+    z=addcgroup(z,cgroup=cgroup,n.cgroup=n.cgroup)
+    
+    update_ztable(z, include.rownames=F)
 ```
