@@ -36,8 +36,7 @@ read_chunk('make-data.R') # call program that forms data frame
 
 # only include those that were marked as include
 dat.t2 = dat.1[dat.1$field7=="No",
-                 colnames(dat.1) %in% c("field4", "field6", 
-                                        "field7",
+                 colnames(dat.1) %in% c("field4", "field6", "field7",
                                         "field14",
                                         "field49", "field55")                                ]
 
