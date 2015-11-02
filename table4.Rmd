@@ -1,0 +1,93 @@
+---
+title: "Table 4. Studies Comparing Mean Office BP to Mean Home BP Monitoring"
+author: ""
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+
+```{r global_options, include=F}
+# see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
+# http://stackoverflow.com/questions/23449319/yaml-current-date-in-rmarkdown (date formatting above)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      echo=F, warning=FALSE, message=FALSE, 
+                      results='hide')
+
+require(knitr)
+library(reshape2)
+library(ggplot2)
+library(car)
+library(plyr)
+library(tables)
+library(data.table)
+library(htmlTable)
+
+library(ztable)
+options(ztable.type="html")
+
+read_chunk('make-data.R') # call program that forms data frame
+```
+
+```{r part1} 
+# Read in data, dat.1, from the make-data.R program in options
+```
+
+```{r subset1}
+# subset data for table 2 and data handling
+
+# only include those that were marked as include
+dat.t4 = dat.1[dat.1$field7=="No",
+                 colnames(dat.1) %in% c("field4", "field6", "field7",
+                                        "field10",
+                                        "field49", "field55")]
+
+# Note: daytime and nighttime abpm means were not on form.
+#       Need to (add field?) go back and get that information
+
+colnames(dat.t4) = c("author", "year", "include", 
+                     "clinic.home",
+                     "num.meas", "mean.meas")
+head(dat.t4)
+
+dat.t4 = within(dat.t4, {
+    author.year = paste(author, year, sep=", ")
+    
+    # number of office bp measurements
+    # order of entries should be clinic|home|ambulatory|other
+    # see bpsr-full-review-preview-online-form-20151101-p3.pdf, a copy of the online form
+
+    clinic.mean = unlist(strsplit(as.character(dat.t4$mean.meas), split="#"))[1] 
+    home.mean = unlist(strsplit(as.character(dat.t4$mean.meas), split="#"))[2]
+    
+    # number of measurements
+    clinic.num = unlist(strsplit(as.character(dat.t4$num.meas), split="#"))[1]
+    home.num = unlist(strsplit(as.character(dat.t4$num.meas), split="#"))[2]
+    
+    clinic.home.yes = ifelse(clinic.home=="",0,1)
+})
+
+dat.t4.sub = dat.t4[dat.t4$clinic.home.yes==1,
+                    colnames(dat.t4) %in% c("author.year", 
+                                            "clinic.mean", "home.mean", 
+                                            "clinic.num", "home.num",
+                                            "clinic.home.yes")]
+
+colnames(dat.t4.sub)
+dat.t4.sub = dat.t4.sub[,c(6, 3, 5, 2, 4)]
+colnames(dat.t4.sub)
+
+colnames(dat.t4.sub) = c("First author, Year",
+                         "Office (n)",
+                         "Office (mean)",
+                         "Home (n)",
+                         "Home (mean)")
+dat.t4.sub
+
+```
+
+```{r, results='asis'}
+    z=ztable(dat.t4.sub,
+         zebra=2,
+         zebra.color = "platinum")
+  update_ztable(z, include.rownames=F)
+```
