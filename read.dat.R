@@ -9,7 +9,6 @@ dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-10-29.csv",
 
 dim(dat.1)
 
-
 # alter names from gravity form field labels -- too long
 
 rownames(dat.1)

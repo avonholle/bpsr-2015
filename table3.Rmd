@@ -63,7 +63,7 @@ dat.t3 = within(dat.t3, {
     #          -------|------
     #     yes  |cell1 | cell2
     #          -------|-------
-    #     no   |cell3 | cell4
+    #     no   |cell3 | cell4 
     
     # see bpsr-full-review-preview-online-form-20151101-p4.pdf, a copy of the online form
 
