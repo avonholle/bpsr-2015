@@ -1,5 +1,6 @@
 # bpsr-2015
 Blood pressure systematic review
+<<<<<<< HEAD
 
 [Code for data handling](make-data.R)
 
@@ -13,3 +14,5 @@ Blood pressure systematic review
 
 
 [Table 6](http://avonholle.github.io/bpsr-2015/table6.html) -- [Code for html file](table6.Rmd)
+=======
+>>>>>>> 58d9f2180211b1586e735e453fff5464eb6b0204

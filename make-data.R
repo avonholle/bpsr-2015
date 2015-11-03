@@ -94,7 +94,11 @@ dat.ts = within(dat.ts, {
   l.1 <- lapply(sbt.1, function(X) c(X, rep(NA, n.1 - length(X))))
   mean.2 = data.frame(t(do.call(cbind, l.1)))
   clinic.mean = mean.2$X1; home.mean = mean.2$X2; 
+<<<<<<< HEAD
   amb.mean = mean.2$X3; other.mean = mean.2$X4
+=======
+  amb.mean = mean.2$X1; other.mean = mean.2$X4
+>>>>>>> 58d9f2180211b1586e735e453fff5464eb6b0204
   
   # number of measurements
   # see http://stackoverflow.com/questions/12946883/strsplit-by-row-and-distribute-results-by-column-in-data-frame
@@ -105,7 +109,11 @@ dat.ts = within(dat.ts, {
   l <- lapply(sbt, function(X) c(X, rep(NA, n - length(X))))
   num.2 = data.frame(t(do.call(cbind, l)))
   clinic.num = num.2$X1; home.num = num.2$X2; 
+<<<<<<< HEAD
   amb.num = num.2$X3; other.num = num.2$X4
+=======
+  amb.num = num.2$X1; other.num = num.2$X4
+>>>>>>> 58d9f2180211b1586e735e453fff5464eb6b0204
   
   # indicator variable for type of comparison
   clinic.amb.yes = ifelse(clinic.amb=="",0,1)
