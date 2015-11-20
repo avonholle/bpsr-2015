@@ -1,16 +1,15 @@
 ---
 title: "Table 1"
-author: ""
+author: ''
 date: "October 29, 2015"
 output: html_document
 ---
 
-```{r global_options, include=F}
+```{r global_options1, echo=FALSE, warning=FALSE, message=FALSE,results='hide'}
 # see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
                       echo=F, warning=FALSE, message=FALSE, 
                       results='hide')
-
 require(knitr)
 library(reshape2)
 library(ggplot2)
@@ -19,17 +18,9 @@ library(plyr)
 library(tables)
 library(data.table)
 library(htmlTable)
-
 library(ztable)
 options(ztable.type="html")
-read_chunk('make-data.R') # call program that forms data frame
-
-
-```
-
-
-```{r part1} 
-# Read in data from the make-data.R program in options
+#read_chunk('make-data.R') # call program that forms data frame
 ```
 
 
@@ -46,16 +37,17 @@ read_chunk('make-data.R') # call program that forms data frame
 # field was added.
 
 # only include those that were marked as include
-dat.1.t1 = dat.1[dat.1$field7=="No",
-                 colnames(dat.1) %in% c("field4", "field6", 
-                                         paste("field", c(10:14), sep=""),
-                                         paste("field", c(18:23), sep=""))]
+dat.1.t1 = dat.1[dat.1$field8=="No",
+                 colnames(dat.1) %in% c("field5", "field7", 
+                                         paste("field", c(11:15), sep=""),
+                                         paste("field", c(19:24), sep=""),
+                                        "field28")]
 
 colnames(dat.1.t1) = c("author", "year", 
                        "clinic.amb", "clinic.home", "home.amb", 
                        "clinic.aoffice", "aoffice.amb",
                        "population", "mean.age",  "min.age", "max.age",
-                       "female", "race")
+                       "female", "race", "setting")
 sapply(dat.1.t1[,3:7], levels)
 
 # 
@@ -99,10 +91,9 @@ dat.1.t1 = within(dat.1.t1, {
   female.2 = paste(round(female,0))
   })
 
-
 names(dat.1.t1)
 
-table1.dat = data.frame(dat.1.t1[,c(17, 8, 14, 16, 15, 13)],
+table1.dat = data.frame(dat.1.t1[,c(18, 14, 15, 17, 16, 13)],
                         row.names=NULL)
 
 colnames(table1.dat) = c("First author, Year",
@@ -110,15 +101,16 @@ colnames(table1.dat) = c("First author, Year",
                          "Comparison groups",
                          "Age (mean), age range", 
                          "Female (%)",
-                         "African American (%)")
+                         "Race/ethnicity")
 rownames(table1.dat)=NULL
 ```
 
 
-```{r, results='asis'}
+```{r, results='asis', echo=FALSE}
     z=ztable(table1.dat,
          zebra=2,
          zebra.color = "platinum")
-  update_ztable(z, include.rownames=F)
+  update_ztable(z, include.rownames=F,
+                caption="Table 1. Characteristics of Included Studies")
 ```
 

@@ -5,7 +5,7 @@ date: "November 1, 2015"
 output: html_document
 ---
 
-```{r global_options, include=F}
+```{r global_options6, include=F, eval=FALSE}
 # see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
                       echo=F, warning=FALSE, message=FALSE, 
@@ -23,16 +23,16 @@ library(htmlTable)
 library(ztable)
 options(ztable.type="html")
 
-read_chunk('make-data.R') # call program that forms data frame
+#read_chunk('make-data.R') # call program that forms data frame
 ```
 
-```{r part1} 
+```{r part1-6} 
 # Read in data, dat.1, from the make-data.R program in options
 # Also make a long form data frame, dat.ts.long, for tables 2, 4, and 6
 ```
 
 
-```{r prep2}
+```{r prep6}
 # prep data for Table 6
 names(dat.ts.long)
 
@@ -45,6 +45,8 @@ dt6 = dcast(compare.t6, author.year ~ type.descrip + type.measure, value.var="va
 colnames(dt6)
 colnames(dt6) = c("Author, year", "Count", "Mean",
                   "Count", "Mean")
+
+dt6
 ```
 
 ```{r, results='asis'}
@@ -55,5 +57,6 @@ colnames(dt6) = c("Author, year", "Count", "Mean",
          zebra.color = "platinum")
     z=addcgroup(z,cgroup=cgroup,n.cgroup=n.cgroup)
     
-    update_ztable(z, include.rownames=F)
+    update_ztable(z, include.rownames=F, 
+                  caption="Table 6. Studies Comparing Mean Home BP to Mean Ambulatory BP Monitoring")
 ```

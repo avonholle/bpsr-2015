@@ -14,12 +14,14 @@ require(stringr)
 library(ztable)
 options(ztable.type="html")
 
+require(data.table)
+
 ## @knitr part1
 
 # Read in data
 setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
-dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-10-29.csv", # this particular file has hashtags instead of | to delimit values within one entry item
+dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-11-05.csv", # this particular file has hashtags instead of | to delimit values within one entry item
          head=T,
          sep=",")
 
@@ -37,6 +39,7 @@ cnames.short.2 = paste("field", 1:length(cnames.short), sep="")
 cnames.short.2[1:10]
 
 colnames(dat.1) = cnames.short.2
+length(colnames(dat.1)) # verify 111.
 
 sapply(dat.1, class) # look at class values for each field
 
@@ -49,37 +52,49 @@ var.vals[1:25,]
 # Subset data for table 2 and data handling
 # ...........................................
 
-comparisons = c("field10", # clinic to amb
-                "field11", # clinic to home
-                "field12", # home to amb
-                "field13", # clinic to auto office
-                "field14") # auto office to amb
+comparisons = c("field11", # clinic to amb
+                "field12", # clinic to home
+                "field13", # home to amb
+                "field14", # clinic to auto office
+                "field15") # auto office to amb
 
+# LEFT OFF HERE .................... NEED to fix fields since I have changed the data base since end of october
+# Added a field to indicate a re-entry.
+# ..............................................................................
+
+dim(dat.1)
 # only include those that were marked as include
-dat.ts = dat.1[dat.1$field7=="No",
-               colnames(dat.1) %in% c("field3", "field4", "field6", "field7",
-                                      comparisons,
-                                      "field49", "field55")]
+dat.ts = dat.1[dat.1$field8=="No",
+               colnames(dat.1) %in% c("field2", "field3", "field4",
+                                      "field5", "field7", "field8", "field10",
+                                      "field16",
+                                      comparisons, "field28",
+                                      "field50", "field56")]
 
-dat.ts
+head(dat.ts)
 
 # Note: daytime and nighttime abpm means were not on form.
 #       Need to (add field?) go back and get that information
-
-colnames(dat.ts) = c("id", "author", "year", "include", 
+colnames(dat.ts)
+colnames(dat.ts) = c("date", "revision", "id", "author", "year",
+                     "exclude", "reproduc",
                      "clinic.amb", "clinic.home", "home.amb",
-                     "clinic.auto", "auto.amb",
+                     "clinic.auto", "auto.amb", 
+                     "far.apart", "setting",
                      "num.meas", "mean.meas")
 head(dat.ts)
+table(dat.ts$reproduc) # 6 reproducibility studies
+table(dat.ts$revision) # 8 revisions so far (2015/11/20)
 
 # prep dat.ts so I can extract out delimited fields.
 # there are some values that have no responses and no delimiters.
 # will add delimiters so the strsplit function works properly.
 # .............................................................
 
-
 dat.ts = within(dat.ts, {
   author.year = paste(author, year, sep=", ")
+   
+  rep.table = ifelse(substr(reproduc,1,1)=="R",1,0)
   
   # number of office bp measurements
   # order of entries should be clinic|home|ambulatory|other
@@ -94,12 +109,9 @@ dat.ts = within(dat.ts, {
   l.1 <- lapply(sbt.1, function(X) c(X, rep(NA, n.1 - length(X))))
   mean.2 = data.frame(t(do.call(cbind, l.1)))
   clinic.mean = mean.2$X1; home.mean = mean.2$X2; 
-<<<<<<< HEAD
   amb.mean = mean.2$X3; other.mean = mean.2$X4
-=======
-  amb.mean = mean.2$X1; other.mean = mean.2$X4
->>>>>>> 58d9f2180211b1586e735e453fff5464eb6b0204
-  
+ # amb.mean = mean.2$X1; other.mean = mean.2$X4
+
   # number of measurements
   # see http://stackoverflow.com/questions/12946883/strsplit-by-row-and-distribute-results-by-column-in-data-frame
   
@@ -109,12 +121,9 @@ dat.ts = within(dat.ts, {
   l <- lapply(sbt, function(X) c(X, rep(NA, n - length(X))))
   num.2 = data.frame(t(do.call(cbind, l)))
   clinic.num = num.2$X1; home.num = num.2$X2; 
-<<<<<<< HEAD
   amb.num = num.2$X3; other.num = num.2$X4
-=======
   amb.num = num.2$X1; other.num = num.2$X4
->>>>>>> 58d9f2180211b1586e735e453fff5464eb6b0204
-  
+
   # indicator variable for type of comparison
   clinic.amb.yes = ifelse(clinic.amb=="",0,1)
   clinic.home.yes = ifelse(clinic.home=="",0,1)
@@ -124,22 +133,19 @@ dat.ts = within(dat.ts, {
   
 })
 
+table(dat.ts$rep.table) # 6 reproducibility studies
+
 colnames(dat.ts)
 names(dat.ts$num.2)
 
 dim(dat.ts)
 names(dat.ts)
 
-
-# convert data frame from wide to long for tables 2, 4, and 6
-
-nrow(dat.ts)-length(unique(dat.ts$id)) # note there is one duplicate.
-duplicated(dat.ts$id)
-# Note: for now will just take the first entry but will have to figure out which one to choose.
-
-
-dat.ts.sub1 = dat.ts[!(duplicated(dat.ts$id)),!(colnames(dat.ts) %in% c("author", "year",
-                                                "include", "clinic.amb",
+# Convert data frame from wide to long for tables 2, 4, and 6
+# ......................................
+dat.ts.sub1 = dat.ts[,!(colnames(dat.ts) %in% c("author", "year", "setting",
+                                                "exclude", "clinic.amb",
+                                                "reproduc",
                                                 "clinic.home", "home.amb",
                                                 "clinic.auto", "auto.amb",
                                                 "mean.meas", "num.meas",
@@ -148,17 +154,37 @@ dat.ts.sub1 = dat.ts[!(duplicated(dat.ts$id)),!(colnames(dat.ts) %in% c("author"
                                                 "num.2", "num.meas.2"))] # remove original variables
 colnames(dat.ts.sub1)
 
+# Take the last entered revision for a paper if marked, dat.ts$revision==1
+table(dat.ts.sub1$revision)
+dat.ts.sub1[order(dat.ts.sub1$id, 
+                  dat.ts.sub1$revision, 
+                  dat.ts.sub1$date),]
+dat.ts.sub1[,c(1:4)]
+table(dat.ts.sub1$id)[table(dat.ts.sub1$id)==2] # Note: 10657 is the duplicate
 
-dat.ts.long = melt(dat.ts.sub1, id.vars=c("id",
-                                          "author.year",
-                                          "auto.amb.yes",
-                                          "clinic.auto.yes",
-                                          "home.amb.yes",
-                                          "clinic.home.yes",
-                                          "clinic.amb.yes"))
+dt1 = data.table(dat.ts.sub1, key="id")
+
+# see http://stats.stackexchange.com/questions/7884/fast-ways-in-r-to-get-the-first-row-of-a-data-frame-grouped-by-an-identifier
+dat.ts.sub2 = dt1[J(unique(id)),mult="last"]
+nrow(dat.ts.sub2); nrow(dat.ts.sub1) #  now no duplicate entries.
+dat.ts.sub2[,c(1:4), with=F] # Note: picked id=10657 with date
+
+id.vars.t = c("id", "date",
+              "revision",
+              "rep.table",
+              "author.year",
+              "auto.amb.yes",
+              "clinic.auto.yes",
+              "home.amb.yes",
+              "clinic.home.yes",
+              "clinic.amb.yes")
+
+dat.ts.long = melt(dat.ts.sub2, id.vars=c(id.vars.t, "far.apart"))
+dat.t9.long = melt(dat.ts.sub2, id.vars=c(id.vars.t))
 
 colnames(dat.ts.long)
 table(dat.ts.long$variable)
+table(dat.ts.long$author.year)
 
 # more data handling to make indicator variables for type of measurements (other, amb, home and clinic)
 # and mean or count 
@@ -171,9 +197,11 @@ dat.ts.long = within(dat.ts.long, {
                                       ifelse(grepl("clinic", variable)==T, "clinic", NA))))
 })
 
+table(dat.ts.long$variable)
 table(dat.ts.long$type.measure) #check that it works
 table(dat.ts.long$type.descrip) #check
 
+# .........................................
 # Note: for subsequent analyses will need to select out the appropriate values
 # by selecting mean/count from type.measure variable
 # and other/amb/home/clinic from type.descrip variable
@@ -187,7 +215,6 @@ compare.1 = dat.ts.long[dat.ts.long$clinic.home.yes==1 &
 dim(compare.1)
 head(compare.1)
 table(compare.1$author.year)
-
 
 compare.1[,colnames(compare.1) %in% c("author.year", 
                                       "type.measure",

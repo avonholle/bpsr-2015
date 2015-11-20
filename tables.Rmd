@@ -1,12 +1,11 @@
 ---
-title: "Variable names"
-author: ""
+title: "Tables 1, 2, 4 and 6"
+author: ''
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
-
-```{r global_options, include=F}
+```{r global_options, echo=FALSE, warning=FALSE, message=FALSE,results='hide'}
 # see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
                       echo=F, warning=FALSE, message=FALSE, 
@@ -20,22 +19,40 @@ library(plyr)
 library(tables)
 library(data.table)
 library(htmlTable)
-
 library(ztable)
 options(ztable.type="html")
 read_chunk('make-data.R') # call program that forms data frame
-
 ```
+
+
+<!--
+Note: all chunks have to have unique names, if there are names.
+-->
+
 
 ```{r part1} 
-# Read in data from the make-data.R program in options
+# Read in data, dat.1, from the make-data.R program in options
+# Also make a long form data frame, dat.ts.long, for tables 2, 4, 6 and 9
+```
+
+```{r child = 'table1.Rmd'}
 ```
 
 
-```{r, results='markup'}
-
-colnames(var.vals) = c("Label (truncated) of original field/column", "New variable name")
-
-### Table of revised data column names and description
-kable(var.vals)
+```{r child = 'table2.Rmd'}
 ```
+
+
+
+```{r child = 'table4.Rmd'}
+```
+
+
+
+```{r child = 'table6.Rmd'}
+```
+
+
+```{r child = 'table9.Rmd'}
+```
+

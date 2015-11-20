@@ -36,10 +36,9 @@ read_chunk('make-data.R') # call program that forms data frame
 # abpm vs automated office
 
 # only include those that were marked as include
-dat.t3 = dat.1[dat.1$field7=="No",
-                 colnames(dat.1) %in% c("field4", "field6", 
-                                        "field7",
-                                        "field14",
+dat.t3 = dat.1[dat.1$field8=="No",
+                 colnames(dat.1) %in% c("field5", "field7", "field8",
+                                        "field15",
                                         "field86", "field87", "field88")]
 
 # Note: daytime and nighttime abpm means were not on form.
