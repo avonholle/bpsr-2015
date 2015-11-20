@@ -1,5 +1,5 @@
 ---
-title: "Tables 1, 2, 4 and 6"
+title: "Tables 1, 2, 4, 6 and 9"
 author: ''
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
@@ -35,23 +35,27 @@ Note: all chunks have to have unique names, if there are names.
 # Also make a long form data frame, dat.ts.long, for tables 2, 4, 6 and 9
 ```
 
+---
+
 ```{r child = 'table1.Rmd'}
 ```
 
+---
 
 ```{r child = 'table2.Rmd'}
 ```
 
-
+---
 
 ```{r child = 'table4.Rmd'}
 ```
 
-
+---
 
 ```{r child = 'table6.Rmd'}
 ```
 
+---
 
 ```{r child = 'table9.Rmd'}
 ```

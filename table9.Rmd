@@ -67,5 +67,5 @@ colnames(dt9) = c("Author, year",
                 n.cgroup=n.cgroup)
     
     update_ztable(z, include.rownames=F,
-                  caption="Table 9. Reproducibility")
+                  caption="<b>Table 9. Reproducibility</b>")
 ```
