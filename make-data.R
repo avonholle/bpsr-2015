@@ -90,6 +90,7 @@ table(dat.ts$revision) # 8 revisions so far (2015/11/20)
 # there are some values that have no responses and no delimiters.
 # will add delimiters so the strsplit function works properly.
 # .............................................................
+head(dat.ts[dat.ts$id %in% c(10569),])
 
 dat.ts = within(dat.ts, {
   author.year = paste(author, year, sep=", ")
@@ -122,7 +123,6 @@ dat.ts = within(dat.ts, {
   num.2 = data.frame(t(do.call(cbind, l)))
   clinic.num = num.2$X1; home.num = num.2$X2; 
   amb.num = num.2$X3; other.num = num.2$X4
-  amb.num = num.2$X1; other.num = num.2$X4
 
   # indicator variable for type of comparison
   clinic.amb.yes = ifelse(clinic.amb=="",0,1)
@@ -154,6 +154,9 @@ dat.ts.sub1 = dat.ts[,!(colnames(dat.ts) %in% c("author", "year", "setting",
                                                 "num.2", "num.meas.2"))] # remove original variables
 colnames(dat.ts.sub1)
 
+
+head(dat.ts.sub1[dat.ts.sub1$id %in% c(10569),])
+
 # Take the last entered revision for a paper if marked, dat.ts$revision==1
 table(dat.ts.sub1$revision)
 dat.ts.sub1[order(dat.ts.sub1$id, 
@@ -179,6 +182,9 @@ id.vars.t = c("id", "date",
               "clinic.home.yes",
               "clinic.amb.yes")
 
+
+head(dat.ts.sub2[dat.ts.sub2$id %in% c(10569)])
+
 dat.ts.long = melt(dat.ts.sub2, id.vars=c(id.vars.t, "far.apart"))
 dat.t9.long = melt(dat.ts.sub2, id.vars=c(id.vars.t))
 
@@ -197,6 +203,7 @@ dat.ts.long = within(dat.ts.long, {
                                       ifelse(grepl("clinic", variable)==T, "clinic", NA))))
 })
 
+head(dat.ts.long[dat.ts.long$id %in% c(10569)])
 table(dat.ts.long$variable)
 table(dat.ts.long$type.measure) #check that it works
 table(dat.ts.long$type.descrip) #check
