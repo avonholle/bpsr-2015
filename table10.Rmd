@@ -1,0 +1,74 @@
+---
+title: "Table 10. List of papers by exclusion status"
+output: html_document
+---
+
+
+
+```{r prep10}
+# prep data for Table 10 based on data from make-data.R
+names(dat.1)
+
+dat.10 = dat.1[, colnames(dat.1) %in% c("field1", "field2", "field3", "field4",
+                                        "field5", "field7", 
+                                        "field8",
+                                        "exclude", "exclude.update")]
+
+colnames(dat.10) = c("reviewer", "date", "revision", "id", "author", "year",
+                     "original exclude value", "revised exclude value", "exclude.update")
+
+dat.10 = within(dat.10, {
+  "Author, Year" = paste(author, year, sep=", ")
+  "Exclude update, indicator" = factor(exclude.update,
+                                       labels=c("No", "Yes"))
+  
+})
+
+sub.10 = dat.10[,colnames(dat.10) %in% c("number", "id", "reviewer", 
+                                      "Author, Year", 
+                                      "original exclude value", 
+                                      "revised exclude value", 
+                                      "Exclude update, indicator")]
+
+```
+
+```{r, results='markup', eval=FALSE}
+kable(sub.10)
+
+```
+
+
+```{r}
+output = as.matrix(sub.10)
+colnames(output)
+
+# create row group labels for ztable below
+types = unique(sub.10[,c(3:5)]); types
+types$lab = c("4. Keep, original",
+              "2. Exclude, original",
+              "3. Keep, updated$^a$", 
+              "1. Exclude, updated$^a$"); types
+
+output.2 = merge(output, types,
+               by=c(colnames(sub.10[,c(3:5)])))
+head(output.2)
+colnames(output.2)
+
+info.10 = as.data.frame(table(output.2$lab))
+output.2 = output.2[order(output.2$lab),]
+
+```
+
+```{r, results='asis'}
+zt = ztable(output.2[, !(colnames(output.2) %in% c("lab"))],
+            zebra=2,
+            zebra.color = "platinum")
+
+labs=names(table(output.2$lab))
+
+zt = addrgroup(zt, 
+              rgroup = labs,
+              n.rgroup = table(output.2$lab))
+print(zt)
+```
+$^a$ These records were entered prior to 10/13/2015. They are considered for inclusion after evaluating presence of values entered for relevant tables.

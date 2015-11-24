@@ -1,0 +1,47 @@
+---
+title: "Table 11. List of excluded studies and reason for exclusion"
+output: html_document
+---
+
+
+```{r prep11}
+# prep data for Table 10 based on data from make-data.R
+names(dat.1)
+
+dat.11 = dat.1[, colnames(dat.1) %in% c("field1", "field2", "field3", "field4",
+                                        "field5", "field7", 
+                                        "field8", "field9",
+                                        "exclude", "exclude.update")]
+
+colnames(dat.11) = c("reviewer", "date", "revision", "id", "author", "year",
+                     "Original exclude value",
+                     "Reason for exclusion", 
+                     "Revised exclude value",
+                     "exclude.update")
+
+dat.11 = within(dat.11, {
+  "Author, Year" = paste(author, year, sep=", ")
+  "Exclude update, indicator" = factor(exclude.update,
+                                       labels=c("No", "Yes"))
+  
+})
+
+
+sub.11 = dat.11[dat.11$"Revised exclude value"=="Yes",
+                colnames(dat.11) %in% c("number", "id",
+                                        "reviewer", 
+                                        "Author, Year",
+                                        "Revised exclude value",
+                                        "Reason for exclusion")]
+
+sub.11$`Reason for exclusion`=iconv(sub.11$`Reason for exclusion`, "", "ASCII") # these text values have weird characters in them. Need to strip these out so it works in the summary table below.
+
+```
+
+```{r, results='asis'}
+ztable(sub.11,
+       zebra=2,
+       zebra.color = "platinum")
+
+```
+

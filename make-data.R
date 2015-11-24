@@ -21,11 +21,13 @@ require(data.table)
 # Read in data
 setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
-dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-11-05.csv", # this particular file has hashtags instead of | to delimit values within one entry item
+dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-11-24.csv", # this particular file has hashtags instead of | to delimit values within one entry item
          head=T,
          sep=",")
 
 dim(dat.1)
+
+
 
 # alter names from gravity form field labels -- too long
 
@@ -46,7 +48,6 @@ sapply(dat.1, class) # look at class values for each field
 # list of col names and field description from gravity form
 var.vals = cbind(cnames.short, cnames.short.2)
 rownames(var.vals)=NULL
-var.vals[1:25,]
 
 
 # Subset data for table 2 and data handling
@@ -58,35 +59,77 @@ comparisons = c("field11", # clinic to amb
                 "field14", # clinic to auto office
                 "field15") # auto office to amb
 
-# LEFT OFF HERE .................... NEED to fix fields since I have changed the data base since end of october
-# Added a field to indicate a re-entry.
-# ..............................................................................
 
+# Revise the exclude variable to include those reviews done prior to 10/13/2015.
+# this date was before the exclude field was added to the gravity form.
+# for the entries with a missing "exclude" variable I will assign one given
+# the availability of information in the key fields:  "clinic.amb", "clinic.home", 
+# "home.amb", "clinic.auto", "auto.amb", "far.apart", "setting", 
+# "num.meas", "mean.meas"
+# ......................................................................
+
+key.fields = c( "field16", "field50", "field56")
+dat.1[dat.1$field8=="", c("field8", key.fields)] # look at fields
+dat.1$miss = apply(dat.1[,key.fields], 1, function(x) all(x==""|is.na(x))) # make an indicator of 1 if all fields are missing
+table(dat.1$miss)
+table(dat.1$field8)
+
+length(dat.1[dat.1$field8=="",]$field8)
+
+dat.1$exclude=dat.1$field8
+dat.1$exclude[dat.1$field8 == ""] = ifelse(dat.1$miss[dat.1$field8 == ""] == F, "No", "Yes") # fix exclude for those entries made before 10/13/2015.
+with(dat.1, table(exclude, miss, field8)) # check
 dim(dat.1)
-# only include those that were marked as include
-dat.ts = dat.1[dat.1$field8=="No",
-               colnames(dat.1) %in% c("field2", "field3", "field4",
-                                      "field5", "field7", "field8", "field10",
-                                      "field16",
-                                      comparisons, "field28",
-                                      "field50", "field56")]
 
-head(dat.ts)
+# make an indicator for those entries that have an updated exclude variable.
+
+dat.1$exclude.update=0
+dat.1$exclude.update[dat.1$field8 == ""] = 1
+
+# If the entry is a revision then take only the most recent revision and discard the rest
+# .......................................
+
+
+dat.1 = dat.1[order(dat.1$field4, dat.1$field2),]
+dat.1.dt = data.table(dat.1, key="field4")
+
+
+# see http://stats.stackexchange.com/questions/7884/fast-ways-in-r-to-get-the-first-row-of-a-data-frame-grouped-by-an-identifier
+dat.1.sub = dat.1.dt[J(unique(field4)), mult="last"]
+nrow(dat.1)-nrow(dat.1.sub) # 9 records taken out.
+
+table(duplicated(dat.1$field4)) # Check duplicated paper id? As of 11/24/2015 there are 9 duplicate ids
+as.data.frame(dat.1.sub)[,colnames(dat.1.sub) %in% c("field1","field3", "field4")] #check
+
+dat.1 = as.data.frame(dat.1.sub)
+
+# Make a data frame only including those that were marked as include
+# (now including updated exclude variable. Should check for these entries.)
+# ....................................................................
+dat.ts = dat.1[dat.1$exclude=="No",
+               colnames(dat.1) %in% c("field1", "field2", "field3", "field4", "field5", "field7", 
+                                      "field10", "exclude.update",
+                                       comparisons, 
+                                      "field16", "field28",
+                                      "field50", "field56")]
+colnames(dat.ts)
 
 # Note: daytime and nighttime abpm means were not on form.
 #       Need to (add field?) go back and get that information
-colnames(dat.ts)
-colnames(dat.ts) = c("date", "revision", "id", "author", "year",
-                     "exclude", "reproduc",
+
+colnames(dat.ts) = c("reviewer", 
+                     "date", "revision", "id", "author", "year",
+                     "reproduc",
                      "clinic.amb", "clinic.home", "home.amb",
                      "clinic.auto", "auto.amb", 
                      "far.apart", "setting",
-                     "num.meas", "mean.meas")
+                     "num.meas", "mean.meas", "exclude.update")
+
 head(dat.ts)
 table(dat.ts$reproduc) # 6 reproducibility studies
 table(dat.ts$revision) # 8 revisions so far (2015/11/20)
 
-# prep dat.ts so I can extract out delimited fields.
+# Prep dat.ts so I can extract out delimited fields.
 # there are some values that have no responses and no delimiters.
 # will add delimiters so the strsplit function works properly.
 # .............................................................
@@ -143,7 +186,8 @@ names(dat.ts)
 
 # Convert data frame from wide to long for tables 2, 4, and 6
 # ......................................
-dat.ts.sub1 = dat.ts[,!(colnames(dat.ts) %in% c("author", "year", "setting",
+dat.ts.sub1 = dat.ts[,!(colnames(dat.ts) %in% c("reviewer", 
+                                                "author", "year", "setting",
                                                 "exclude", "clinic.amb",
                                                 "reproduc",
                                                 "clinic.home", "home.amb",
@@ -151,7 +195,8 @@ dat.ts.sub1 = dat.ts[,!(colnames(dat.ts) %in% c("author", "year", "setting",
                                                 "mean.meas", "num.meas",
                                                 "mean.2", "mean.meas.2",
                                                 "l", "n", "sbt", "l.1", "n.1", "sbt.1",
-                                                "num.2", "num.meas.2"))] # remove original variables
+                                                "num.2", "num.meas.2",
+                                                "exclude.update"))] # remove original variables
 colnames(dat.ts.sub1)
 
 

@@ -1,31 +1,7 @@
 ---
 title: "Table 4. Studies Comparing Mean Office BP to Mean Home BP Monitoring"
-author: ""
-date: "November 1, 2015"
 output: html_document
 ---
-
-```{r global_options4, include=F, eval=FALSE}
-# see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
-                      echo=F, warning=FALSE, message=FALSE, 
-                      results='hide')
-
-require(knitr)
-library(reshape2)
-library(ggplot2)
-library(car)
-library(plyr)
-library(tables)
-library(data.table)
-library(htmlTable)
-
-library(ztable)
-options(ztable.type="html")
-
-#read_chunk('make-data.R') # call program that forms data frame
-```
-
 
 ```{r prep2-4}
 # prep data for Table 4
