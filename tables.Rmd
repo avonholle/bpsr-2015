@@ -2,7 +2,12 @@
 title: "Tables 1, 2, 4, 6 and 9"
 author: ''
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_depth: 4
+    theme: united
+    number_sections: true
 ---
 
 ```{r global_options, echo=FALSE, warning=FALSE, message=FALSE,results='hide'}
@@ -37,26 +42,43 @@ Note: all chunks have to have unique names, if there are names.
 
 ---
 
+# Table 1
+
 ```{r child = 'table1.Rmd'}
 ```
 
 ---
+
+# Table 2
 
 ```{r child = 'table2.Rmd'}
 ```
 
 ---
 
+# Table 4
+
 ```{r child = 'table4.Rmd'}
 ```
 
 ---
+
+# Table 6
 
 ```{r child = 'table6.Rmd'}
 ```
 
 ---
 
+# Table 9
+
 ```{r child = 'table9.Rmd'}
+```
+
+---
+
+# Table 8, info
+
+```{r child = 'table8.Rmd'}
 ```
 
