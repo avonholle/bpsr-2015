@@ -12,7 +12,9 @@ names(dat.1)
 dat.10 = dat.1[, colnames(dat.1) %in% c("field1", "field2", "field3", "field4",
                                         "field5", "field7", 
                                         "field8",
-                                        "exclude", "exclude.update")]
+                                        "exclude",
+                                        "exclude.update")]
+dim(dat.10)
 
 colnames(dat.10) = c("reviewer", "date", "revision", "id", "author", "year",
                      "original exclude value", "revised exclude value", "exclude.update")
@@ -44,9 +46,9 @@ colnames(output)
 
 # create row group labels for ztable below
 types = unique(sub.10[,c(3:5)]); types
-types$lab = c("4. Keep, original",
+types$lab = c( "3. Keep, updated$^a$", 
+              "4. Keep, original",
               "2. Exclude, original",
-              "3. Keep, updated$^a$", 
               "1. Exclude, updated$^a$"); types
 
 output.2 = merge(output, types,
