@@ -27,7 +27,7 @@ read_chunk('make-data.R') # call program that forms data frame
 
 ```
 
-```{r part1} 
+```{r part1, include=FALSE} 
 # Read in data from the make-data.R program in options
 ```
 

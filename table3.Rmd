@@ -1,45 +1,20 @@
 ---
 title: "Table 3. Studies Comparing Hypertension Status by Office BP Compared to Hypertension Status by Ambulatory BP Monitoring"
 author: ""
-date: "November 1, 2015"
 output: html_document
 ---
 
-```{r global_options, include=F}
-# see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
-                      echo=F, warning=FALSE, message=FALSE, 
-                      results='hide')
-
-require(knitr)
-library(reshape2)
-library(ggplot2)
-library(car)
-library(plyr)
-library(tables)
-library(data.table)
-library(htmlTable)
-
-library(ztable)
-options(ztable.type="html")
-
-read_chunk('make-data.R') # call program that forms data frame
-```
-
-```{r part1} 
-# Read in data, dat.1, from the make-data.R program in options
-```
-
-```{r subset1}
+```{r prep3}
 # subset data for table 2 and data handling
 
 # abpm vs automated office
 
 # only include those that were marked as include
-dat.t3 = dat.1[dat.1$field8=="No",
+dat.t3 = dat.1[dat.1$exclude=="No",
                  colnames(dat.1) %in% c("field5", "field7", "field8",
                                         "field15",
-                                        "field86", "field87", "field88")]
+                                        "field90", "field91", "field92")]
+colnames(dat.t3)
 
 # Note: daytime and nighttime abpm means were not on form.
 #       Need to (add field?) go back and get that information
@@ -98,10 +73,11 @@ dat.t3.sub
 ```
 
 
-```{r, results='asis', eval=FALSE}
+```{r, results='asis'}
 # NOTE: no table done for this comparison group because no numbers exist for this particular table.
-    z=ztable(dat.t2.sub,
+    z=ztable(dat.t3.sub,
          zebra=2,
          zebra.color = "platinum")
+
   update_ztable(z, include.rownames=F)
 ```

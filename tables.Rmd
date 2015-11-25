@@ -40,6 +40,11 @@ Note: all chunks have to have unique names, if there are names.
 # Also make a long form data frame, dat.ts.long, for tables 2, 4, 6 and 9
 ```
 
+```{r child = 'var.vals.Rmd', eval=FALSE}
+# create a data dictionary with abbreviated variable names.
+
+```
+
 ---
 
 # Table 1
@@ -56,9 +61,23 @@ Note: all chunks have to have unique names, if there are names.
 
 ---
 
+# Table 3
+
+```{r child = 'table3.Rmd', eval=FALSE}
+```
+
+---
+
 # Table 4
 
 ```{r child = 'table4.Rmd'}
+```
+
+---
+
+# Table 5
+
+```{r child = 'table5.Rmd'}
 ```
 
 ---
@@ -68,7 +87,16 @@ Note: all chunks have to have unique names, if there are names.
 ```{r child = 'table6.Rmd'}
 ```
 
+
 ---
+
+# Table 8, preliminary QUADAS descriptives.
+
+This needs to be revised to match table 2 from [doi: 10.1136/bmj.d3621](http://dx.doi.org/10.1136/bmj.d3621)
+
+```{r child = 'table8.Rmd'}
+```
+
 
 # Table 9
 
@@ -77,21 +105,10 @@ Note: all chunks have to have unique names, if there are names.
 
 ---
 
-# Table 8, preliminary QUADAS descriptives.
-
-This needs to be revised to match table 2 from doi: 10.1136/bmj.d3621
-
-```{r child = 'table8.Rmd'}
-```
-
-
----
-
 # Table 10, summary of exclusion status, including papers that did not have an exclusion field (entered before 10/13/2015)
 
 ```{r child = 'table10.Rmd'}
 ```
-
 
 ---
 

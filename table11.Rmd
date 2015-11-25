@@ -41,7 +41,8 @@ sub.11$`Reason for exclusion`=iconv(sub.11$`Reason for exclusion`, "", "ASCII") 
 ```{r, results='asis'}
 ztable(sub.11,
        zebra=2,
-       zebra.color = "platinum")
+       zebra.color = "platinum",
+       include.rownames=FALSE)
 
 ```
 

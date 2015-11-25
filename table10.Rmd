@@ -26,7 +26,8 @@ dat.10 = within(dat.10, {
   
 })
 
-sub.10 = dat.10[,colnames(dat.10) %in% c("number", "id", "reviewer", 
+sub.10 = dat.10[,colnames(dat.10) %in% c("number", "id", 
+                                         #"reviewer", 
                                       "Author, Year", 
                                       "original exclude value", 
                                       "revised exclude value", 
@@ -36,7 +37,6 @@ sub.10 = dat.10[,colnames(dat.10) %in% c("number", "id", "reviewer",
 
 ```{r, results='markup', eval=FALSE}
 kable(sub.10)
-
 ```
 
 
@@ -45,14 +45,14 @@ output = as.matrix(sub.10)
 colnames(output)
 
 # create row group labels for ztable below
-types = unique(sub.10[,c(3:5)]); types
+types = unique(sub.10[,c(2:4)]); types
 types$lab = c( "3. Keep, updated$^a$", 
               "4. Keep, original",
               "2. Exclude, original",
               "1. Exclude, updated$^a$"); types
 
 output.2 = merge(output, types,
-               by=c(colnames(sub.10[,c(3:5)])))
+               by=c(colnames(sub.10[,c(2:4)])))
 head(output.2)
 colnames(output.2)
 
@@ -64,7 +64,8 @@ output.2 = output.2[order(output.2$lab),]
 ```{r, results='asis'}
 zt = ztable(output.2[, !(colnames(output.2) %in% c("lab"))],
             zebra=2,
-            zebra.color = "platinum")
+            zebra.color = "platinum",
+            include.rownames=FALSE)
 
 labs=names(table(output.2$lab))
 
