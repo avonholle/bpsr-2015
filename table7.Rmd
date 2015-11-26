@@ -1,0 +1,111 @@
+---
+title: "Table 7. Studies Comparing Hypertension Status by Home BP Compared to Hypertension Status by Ambulatory BP Monitoring"
+output: html_document
+---
+
+```{r prep7}
+
+# home vs amb. Table 4 in part g of form.
+
+# only include those that were marked as include
+dat.t7 = dat.1[dat.1$exclude=="No",
+                 colnames(dat.1) %in% c("field5", "field7",
+                                        "field13",
+                                        "field80", "field81", "field82", "exclude")]
+
+colnames(dat.t7)
+dim(dat.t7)
+
+# Note: daytime and nighttime abpm means were not on form.
+#       Need to (add field?) go back and get that information
+
+colnames(dat.t7) = c("author", "year", 
+                     "home.abpm",
+                     "g4.table.nums", 
+                     "g4.home.threshold.1",
+                     "g4.abpm.threshold.1",
+                     "exclude")
+
+dat.t7[!(dat.t7$home.abpm==""),] #check values
+
+
+dat.t7.sub = dat.t7[!(dat.t7$g4.table.nums=="" |
+                        dat.t7$g4.home.threshold.1=="" |
+                        dat.t7$g4.abpm.threshold.1=="" ),
+                    colnames(dat.t7) %in% c("author", "year",
+                                            "g4.table.nums",
+                                            "g4.home.threshold.1", "g4.abpm.threshold.1")]
+dat.t7.sub
+
+dat.t7.sub = within(dat.t7.sub, {
+    author.year = paste(author, year, sep=", ")
+    
+    # table counts
+    # order of entries should be abpm=yes,office=no | abpm=yes,office=yes | abpm=no, office=no | abpm=no,office=yes
+    
+    # cells as follows (as in hard copy, page 6):
+    #             Home
+    # ABPM        yes | no
+    #          -------|------
+    #     yes  |cell1 | cell2
+    #          -------|-------
+    #     no   |cell3 | cell4 
+    # see bpsr-full-review-preview-online-form-20151101-p4.pdf, a copy of the online form
+    
+    # number of measurements
+  # see http://stackoverflow.com/questions/12946883/strsplit-by-row-and-distribute-results-by-column-in-data-frame
+  
+  num.meas.2 = ifelse(g4.table.nums=="", "|||", as.character(g4.table.nums))
+  sbt = strsplit(num.meas.2, '|', fixed=TRUE)
+  n <- max(sapply(sbt, length))
+  l <- lapply(sbt, function(X) c(X, rep(NA, n - length(X))))
+  num.2 = data.frame(t(do.call(cbind, l)))
+  cell.1 = num.2$X1
+  cell.2 = num.2$X2
+  cell.3 = num.2$X3
+  cell.4 = num.2$X4
+})
+
+dat.t7.sub = dat.t7.sub[,colnames(dat.t7.sub) %in% c("author.year",
+                                                     "cell.1",
+                                            "cell.2", "cell.3", "cell.4",                                               "g4.home.threshold.1",
+                     "g4.abpm.threshold.1")]
+
+dat.t7.sub
+
+colnames(dat.t7.sub)
+dim(dat.t7.sub)
+
+dat.t7.sub = dat.t7.sub[,c(7, 1, 2, 3, 4, 5, 6)]
+colnames(dat.t7.sub)
+colnames(dat.t7.sub) = c("Author, Year",
+                         "Home 1",
+                                  "ABPM 1",
+                                  "ABPM, no. home, no.",
+                              "ABPM, no. home, yes.",
+                              "ABPM, yes. home, no.", 
+                              "ABPM, yes. home, yes")
+
+
+dat.t7.sub
+
+```
+
+
+```{r, results='asis'}
+# NOTE: no table done for this comparison group because no numbers exist for this particular table.
+    z=ztable(dat.t7.sub,
+         zebra=2,
+         zebra.color = "platinum",
+         caption="Table 7. Studies Comparing Hypertension Status by Home BP Compared to Hypertension Status by Ambulatory BP Monitoring")
+
+  cgroup = c("", "Thresholds", "Counts")
+  n.cgroup = c(1,2,4)
+  
+  z = addcgroup(z, 
+                cgroup=cgroup, 
+                n.cgroup=n.cgroup)
+  
+  update_ztable(z, include.rownames=F)
+  
+```

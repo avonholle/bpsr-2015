@@ -1,0 +1,118 @@
+---
+title: "Table 5. Studies Comparing Hypertension Status by Office BP Compared to Hypertension Status by Home BP Monitoring"
+output: html_document
+---
+
+```{r prep5}
+
+# clinic vs home. Table 2 in part g of form.
+
+# only include those that were marked as include
+dat.t5 = dat.1[dat.1$exclude=="No",
+                 colnames(dat.1) %in% c("field5", "field7",
+                                        "field12",
+                                        "field68", "field69", "field70",
+                                        "field71", "exclude")]
+
+colnames(dat.t5)
+dim(dat.t5)
+
+# Note: daytime and nighttime abpm means were not on form.
+#       Need to (add field?) go back and get that information
+
+colnames(dat.t5) = c("author", "year", 
+                     "clinic.home",
+                     "g2.table.nums", 
+                     "g2.clinic.threshold.1",
+                     "g2.clinic.threshold.2",
+                     "g2.home.threshold.1",
+                     "exclude")
+
+dat.t5[!(dat.t5$clinic.home==""),] #check values
+
+
+dat.t5.sub = dat.t5[!(dat.t5$g2.table.nums=="" |
+                        dat.t5$g2.clinic.threshold.1=="" |
+                        dat.t5$g2.clinic.threshold.2=="" |
+                        dat.t5$g2.home.threshold.1==""),
+                    colnames(dat.t5) %in% c("author", "year",
+                                            "g2.table.nums",
+                                            "g2.clinic.threshold.1",
+                                            "g2.clinic.threshold.2",
+                                            "g2.home.threshold.1")]
+dat.t5.sub
+
+dat.t5.sub = within(dat.t5.sub, {
+    author.year = paste(author, year, sep=", ")
+    
+    # table counts
+    # order of entries should be abpm=yes,office=no | abpm=yes,office=yes | abpm=no, office=no | abpm=no,office=yes
+    
+    # cells as follows (as in hard copy, page 6):
+    #             Clinic
+    # Home        yes | no
+    #          -------|------
+    #     yes  |cell1 | cell2
+    #          -------|-------
+    #     no   |cell3 | cell4 
+    # see bpsr-full-review-preview-online-form-20151101-p4.pdf, a copy of the online form
+    
+    # number of measurements
+  # see http://stackoverflow.com/questions/12946883/strsplit-by-row-and-distribute-results-by-column-in-data-frame
+  
+  num.meas.2 = ifelse(g2.table.nums=="", "|||", as.character(g2.table.nums))
+  sbt = strsplit(num.meas.2, '|', fixed=TRUE)
+  n <- max(sapply(sbt, length))
+  l <- lapply(sbt, function(X) c(X, rep(NA, n - length(X))))
+  num.2 = data.frame(t(do.call(cbind, l)))
+  cell.1 = num.2$X1
+  cell.2 = num.2$X2
+  cell.3 = num.2$X3
+  cell.4 = num.2$X4
+})
+
+dat.t5.sub = dat.t5.sub[,colnames(dat.t5.sub) %in% c("author.year",
+                                                     "cell.1",
+                                            "cell.2", "cell.3", "cell.4",                                               "g2.clinic.threshold.1",
+                                            "g2.clinic.threshold.2",
+                                            "g2.home.threshold.1")]
+
+dat.t5.sub
+
+colnames(dat.t5.sub)
+dim(dat.t5.sub)
+
+dat.t5.sub = dat.t5.sub[,c(8, 1, 2, 3, 4, 5, 6, 7)]
+colnames(dat.t5.sub)
+colnames(dat.t5.sub) = c("Author, Year",
+                         "Clinic 1",
+                                  "Clinic 2",
+                                  "Home 1",
+                                  "Home, no. Clinic, no.",
+                              "Home, no. Clinic, yes.",
+                              "Home, yes. Clinic, no.", 
+                              "Home, yes. Clinic, yes")
+
+
+dat.t5.sub
+
+```
+
+
+```{r, results='asis'}
+# NOTE: no table done for this comparison group because no numbers exist for this particular table.
+    z=ztable(dat.t5.sub,
+         zebra=2,
+         zebra.color = "platinum",
+         caption="Table 5. Studies Comparing Hypertension Status by Office BP Compared to Hypertension Status by Home BP Monitoring")
+
+  cgroup = c("", "Thresholds", "Counts")
+  n.cgroup = c(1,3,4)
+  
+  z = addcgroup(z, 
+                cgroup=cgroup, 
+                n.cgroup=n.cgroup)
+  
+  update_ztable(z, include.rownames=F)
+  
+```

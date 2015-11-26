@@ -1,73 +1,100 @@
 ---
 title: "Table 3. Studies Comparing Hypertension Status by Office BP Compared to Hypertension Status by Ambulatory BP Monitoring"
-author: ""
 output: html_document
 ---
 
-```{r prep3}
-# subset data for table 2 and data handling
 
-# abpm vs automated office
+```{r prep3}
+
+# office vs abpm. Table 3 in part G of form.
 
 # only include those that were marked as include
 dat.t3 = dat.1[dat.1$exclude=="No",
-                 colnames(dat.1) %in% c("field5", "field7", "field8",
-                                        "field15",
-                                        "field90", "field91", "field92")]
+                 colnames(dat.1) %in% c("field5", "field7",
+                                        "field11",
+                                        "field74", "field75",
+                                        "field76", "field77",
+                                        "exclude")]
+
 colnames(dat.t3)
+dim(dat.t3)
 
 # Note: daytime and nighttime abpm means were not on form.
 #       Need to (add field?) go back and get that information
 
-colnames(dat.t3) = c("author", "year", "exclude", 
-                     "amb.office",
-                     "g6.table.nums", "g6.abpm.threshold", 
-                     "g6.office.threshold")
-head(dat.t3)
+colnames(dat.t3) = c("author", "year", 
+                     "clinic.amb",
+                     "g3.table.nums", 
+                     "g3.clinic.threshold.1",
+                     "g3.abpm.threshold.1",
+                     "g3.abpm.threshold.2",
+                     "exclude")
 
-dat.t3 = within(dat.t3, {
+dat.t3[!(dat.t3$clinic.amb==""),] #check values
+
+dat.t3.sub = dat.t3[!(dat.t3$g3.table.nums=="" |
+                        dat.t3$g3.clinic.threshold.1=="" |
+                        dat.t3$g3.abpm.threshold.1=="" |
+                        dat.t3$g3.abpm.threshold.2==""),
+                    colnames(dat.t3) %in% c("author", "year",
+                                            "g3.table.nums",
+                                            "g3.clinic.threshold.1",
+                                            "g3.abpm.threshold.1",
+                                            "g3.abpm.threshold.2")]
+dat.t3.sub
+
+dat.t3.sub = within(dat.t3.sub, {
     author.year = paste(author, year, sep=", ")
     
     # table counts
     # order of entries should be abpm=yes,office=no | abpm=yes,office=yes | abpm=no, office=no | abpm=no,office=yes
     
     # cells as follows (as in hard copy, page 6):
-    #             ABPM
-    # Office      yes | no
+    #             Clinic
+    # ABPM        yes | no
     #          -------|------
     #     yes  |cell1 | cell2
     #          -------|-------
     #     no   |cell3 | cell4 
-    
     # see bpsr-full-review-preview-online-form-20151101-p4.pdf, a copy of the online form
-
-    cell.1 = unlist(strsplit(as.character(dat.t3$g6.table.nums), split="#"))[2] 
-    cell.2 = unlist(strsplit(as.character(dat.t3$g6.table.nums), split="#"))[4] 
-    cell.3 = unlist(strsplit(as.character(dat.t3$g6.table.nums), split="#"))[1]
-    cell.4 = unlist(strsplit(as.character(dat.t3$g6.table.nums), split="#"))[3]
-
-    amb.office.yes = ifelse(amb.office=="",0,1)
+    
+    # number of measurements
+  # see http://stackoverflow.com/questions/12946883/strsplit-by-row-and-distribute-results-by-column-in-data-frame
+  
+  num.meas.2 = ifelse(g3.table.nums=="", "|||", as.character(g3.table.nums))
+  sbt = strsplit(num.meas.2, '|', fixed=TRUE)
+  n <- max(sapply(sbt, length))
+  l <- lapply(sbt, function(X) c(X, rep(NA, n - length(X))))
+  num.2 = data.frame(t(do.call(cbind, l)))
+  cell.1 = num.2$X1
+  cell.2 = num.2$X2
+  cell.3 = num.2$X3
+  cell.4 = num.2$X4
 })
 
-colnames(dat.t3)
+dat.t3.sub = dat.t3.sub[,colnames(dat.t3.sub) %in% c("author.year", 
+                                                     "cell.1",
+                                            "cell.2", "cell.3", "cell.4",                                               "g3.clinic.threshold.1",
+                                            "g3.abpm.threshold.1",
+                                            "g3.abpm.threshold.2")]
 
-dat.t3.sub = dat.t3[dat.t3$amb.office.yes==1,
-                    colnames(dat.t3) %in% c("author.year", "cell.1",
-                                            "cell.2", "cell.3", "cell.4",
-                                            "amb.office.yes",
-                                            "g6.abpm.threshold",
-                                            "g6.office.threshold")]
+dat.t3.sub
+
 colnames(dat.t3.sub)
 dim(dat.t3.sub)
 
-dat.t3.sub = dat.t3.sub[,c(8, 1, 2, 7, 6, 5, 4, 3)]
+dat.t3.sub = dat.t3.sub[,c(8, 1, 2, 3, 4, 5, 6, 7)]
 colnames(dat.t3.sub)
-# 
-# colnames(dat.t2.sub) = c("First author, Year",
-#                          "Office (n)",
-#                          "Office (mean)",
-#                          "Ambulatory (n)",
-#                          "Ambulatory (mean)")
+colnames(dat.t3.sub) = c("Author, Year",
+                         "Clinic 1",
+                                  "Clinic 2",
+                                  "Home 1",
+                                  "abpm, no. Clinic, no.",
+                              "abpm, no. Clinic, yes.",
+                              "abpm, yes. Clinic, no.", 
+                              "abpm, yes. Clinic, yes")
+
+
 dat.t3.sub
 
 ```
@@ -77,7 +104,16 @@ dat.t3.sub
 # NOTE: no table done for this comparison group because no numbers exist for this particular table.
     z=ztable(dat.t3.sub,
          zebra=2,
-         zebra.color = "platinum")
+         zebra.color = "platinum",
+         caption="Table 3. Studies Comparing Hypertension Status by Office BP Compared to Hypertension Status by Ambulatory BP Monitoring")
 
+  cgroup = c("", "Thresholds", "Counts")
+  n.cgroup = c(1,3,4)
+  
+  z = addcgroup(z, 
+                cgroup=cgroup, 
+                n.cgroup=n.cgroup)
+  
   update_ztable(z, include.rownames=F)
+  
 ```

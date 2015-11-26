@@ -63,7 +63,7 @@ Note: all chunks have to have unique names, if there are names.
 
 # Table 3
 
-```{r child = 'table3.Rmd', eval=FALSE}
+```{r child = 'table3.Rmd'}
 ```
 
 ---
@@ -85,6 +85,13 @@ Note: all chunks have to have unique names, if there are names.
 # Table 6
 
 ```{r child = 'table6.Rmd'}
+```
+
+---
+
+# Table 7
+
+```{r child = 'table7.Rmd'}
 ```
 
 
