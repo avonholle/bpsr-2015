@@ -12,12 +12,14 @@ dat.11 = dat.1[, colnames(dat.1) %in% c("field1", "field2", "field3", "field4",
                                         "field5", "field7", 
                                         "field8", "field9",
                                         "exclude", "exclude.update")]
+colnames(dat.11)
 
 colnames(dat.11) = c("reviewer", "date", "revision", "id", "author", "year",
+                     "exclude.update",
                      "Original exclude value",
                      "Reason for exclusion", 
-                     "Revised exclude value",
-                     "exclude.update")
+                     "Revised exclude value"
+                     )
 
 dat.11 = within(dat.11, {
   "Author, Year" = paste(author, year, sep=", ")
@@ -29,7 +31,7 @@ dat.11 = within(dat.11, {
 
 sub.11 = dat.11[dat.11$"Revised exclude value"=="Yes",
                 colnames(dat.11) %in% c("number", "id",
-                                        "reviewer", 
+                                        #"reviewer", 
                                         "Author, Year",
                                         "Revised exclude value",
                                         "Reason for exclusion")]

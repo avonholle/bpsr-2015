@@ -21,10 +21,10 @@ dim(dat.t7)
 
 colnames(dat.t7) = c("author", "year", 
                      "home.abpm",
+                     "exclude",
                      "g4.table.nums", 
                      "g4.home.threshold.1",
-                     "g4.abpm.threshold.1",
-                     "exclude")
+                     "g4.abpm.threshold.1")
 
 dat.t7[!(dat.t7$home.abpm==""),] #check values
 

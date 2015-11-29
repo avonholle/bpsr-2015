@@ -14,19 +14,21 @@ output: html_document
 # Need to go back and see which ones are 'include' from time before
 # addition of the include field (quite a few were done before that
 # field was added.
-
+names(dat.1)
+levels(dat.1$exclude.update)
 # only include those that were marked as include
-dat.1.t1 = dat.1[dat.1$field8=="No",
+dat.1.t1 = dat.1[dat.1$exclude=="No",
                  colnames(dat.1) %in% c("field5", "field7", 
                                          paste("field", c(11:15), sep=""),
                                          paste("field", c(19:24), sep=""),
                                         "field28")]
+colnames(dat.1.t1)
 
 colnames(dat.1.t1) = c("author", "year", 
                        "clinic.amb", "clinic.home", "home.amb", 
-                       "clinic.aoffice", "aoffice.amb",
+                       "clinic.aoffice", "aoffice.amb",  "setting",
                        "population", "mean.age",  "min.age", "max.age",
-                       "female", "race", "setting")
+                       "female", "race")
 sapply(dat.1.t1[,3:7], levels)
 
 # 
@@ -60,6 +62,8 @@ names(dat.1.t1)
 test = ifelse(is.na(dat.1.t1$min.age)==T,1,0)
 test
 
+
+
 dat.1.t1 = within(dat.1.t1, {
   author.year = paste(author, year, sep=", ")
   age.range = ifelse(is.na(min.age)==T,
@@ -72,15 +76,14 @@ dat.1.t1 = within(dat.1.t1, {
 
 names(dat.1.t1)
 
-table1.dat = data.frame(dat.1.t1[,c(18, 14, 15, 17, 16, 13)],
+table1.dat = data.frame(dat.1.t1[,c(18, 14, 15, 17, 16)],
                         row.names=NULL)
-
+colnames(table1.dat)
 colnames(table1.dat) = c("First author, Year",
-                         "Study population",
+                         "Race/ethnicity",
                          "Comparison groups",
                          "Age (mean), age range", 
-                         "Female (%)",
-                         "Race/ethnicity")
+                         "Female (%)")
 rownames(table1.dat)=NULL
 ```
 

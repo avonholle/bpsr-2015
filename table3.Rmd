@@ -24,11 +24,11 @@ dim(dat.t3)
 
 colnames(dat.t3) = c("author", "year", 
                      "clinic.amb",
+                     "exclude",
                      "g3.table.nums", 
                      "g3.clinic.threshold.1",
                      "g3.abpm.threshold.1",
-                     "g3.abpm.threshold.2",
-                     "exclude")
+                     "g3.abpm.threshold.2")
 
 dat.t3[!(dat.t3$clinic.amb==""),] #check values
 
@@ -71,6 +71,10 @@ dat.t3.sub = within(dat.t3.sub, {
   cell.3 = num.2$X3
   cell.4 = num.2$X4
 })
+
+colnames(dat.t3.sub)
+dat.t3.sub$g3.table.nums
+
 
 dat.t3.sub = dat.t3.sub[,colnames(dat.t3.sub) %in% c("author.year", 
                                                      "cell.1",

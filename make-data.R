@@ -16,34 +16,37 @@ options(ztable.type="html")
 
 require(data.table)
 
+library(xlsx)
+library(compare)
+
+
 ## @knitr part1
 
 # Read in data
 setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
-dat.1 = read.csv(file="full-text-review-form-08022015-revision-2015-11-24.csv", # this particular file has hashtags instead of | to delimit values within one entry item
+dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-11-24.csv", # this particular file has hashtags instead of | to delimit values within one entry item
          head=T,
          sep=",")
 
-dim(dat.1)
-
+dim(dat.orig)
 
 
 # alter names from gravity form field labels -- too long
 
-rownames(dat.1)
-length(colnames(dat.1))
+rownames(dat.orig)
+length(colnames(dat.orig))
 
-cnames = colnames(dat.1)
+cnames = colnames(dat.orig)
 cnames.short = sapply(cnames, function(x) {substr(x,0,40)})
 cnames.short.2 = paste("field", 1:length(cnames.short), sep="")
 
 cnames.short.2[1:10]
 
-colnames(dat.1) = cnames.short.2
-length(colnames(dat.1)) # verify 111.
+colnames(dat.orig) = cnames.short.2
+length(colnames(dat.orig)) # verify 111.
 
-sapply(dat.1, class) # look at class values for each field
+sapply(dat.orig, class) # look at class values for each field
 
 # list of col names and field description from gravity form
 var.vals = cbind(cnames.short, cnames.short.2)
@@ -69,43 +72,138 @@ comparisons = c("field11", # clinic to amb
 # ......................................................................
 
 key.fields = c( "field16", "field50", "field56")
-dat.1[dat.1$field8=="", c("field8", key.fields)] # look at fields
-dat.1$miss = apply(dat.1[,key.fields], 1, function(x) all(x==""|is.na(x))) # make an indicator of 1 if all fields are missing
-table(dat.1$miss)
-table(dat.1$field8)
+dat.orig[dat.orig$field8=="", c("field8", key.fields)] # look at fields
+dat.orig$miss = apply(dat.orig[,key.fields], 1, function(x) all(x==""|is.na(x))) # make an indicator of 1 if all fields are missing
+table(dat.orig$miss)
+table(dat.orig$field8)
 
-length(dat.1[dat.1$field8=="",]$field8)
+length(dat.orig[dat.orig$field8=="",]$field8)
 
-dat.1$exclude=dat.1$field8
-dat.1$exclude[dat.1$field8 == ""] = ifelse(dat.1$miss[dat.1$field8 == ""] == F, "No", "Yes") # fix exclude for those entries made before 10/13/2015.
-with(dat.1, table(exclude, miss, field8)) # check
-dim(dat.1)
+dat.orig$exclude=dat.orig$field8
+dat.orig$exclude[dat.orig$field8 == ""] = ifelse(dat.orig$miss[dat.orig$field8 == ""] == F, "No", "Yes") # fix exclude for those entries made before 10/13/2015.
+with(dat.orig, table(exclude, miss, field8)) # check
+dim(dat.orig)
 
 # make an indicator for those entries that have an updated exclude variable.
 
-dat.1$exclude.update=0
-dat.1$exclude.update[dat.1$field8 == ""] = 1
+dat.orig$exclude.update=0
+dat.orig$exclude.update[dat.orig$field8 == ""] = 1
 
 # If the entry is a revision then take only the most recent revision and discard the rest
 # .......................................
 
-
-dat.1 = dat.1[order(dat.1$field4, dat.1$field2),]
-dat.1.dt = data.table(dat.1, key="field4")
-
+dat.orig = dat.orig[order(dat.orig$field4, dat.orig$field2),]
+dat.orig.dt = data.table(dat.orig, key="field4")
 
 # see http://stats.stackexchange.com/questions/7884/fast-ways-in-r-to-get-the-first-row-of-a-data-frame-grouped-by-an-identifier
-dat.1.sub = dat.1.dt[J(unique(field4)), mult="last"]
-nrow(dat.1)-nrow(dat.1.sub) # 9 records taken out.
+dat.orig.sub = dat.orig.dt[J(unique(field4)), mult="last"]
+nrow(dat.orig)-nrow(dat.orig.sub) # 9 records taken out.
 
-table(duplicated(dat.1$field4)) # Check duplicated paper id? As of 11/24/2015 there are 9 duplicate ids
-as.data.frame(dat.1.sub)[,colnames(dat.1.sub) %in% c("field1","field3", "field4")] #check
+table(duplicated(dat.orig$field4)) # Check duplicated paper id? As of 11/24/2015 there are 9 duplicate ids
+as.data.frame(dat.orig.sub)[,colnames(dat.orig.sub) %in% c("field1","field3", "field4")] #check
 
-dat.1 = as.data.frame(dat.1.sub)
+dat.orig = as.data.frame(dat.orig.sub)
+
+# Create a file for export to google docs for future revisions (post-2015/11/28)
+# ..............................................................................
+
+vars.to.keep = c("field1", "field2", "field3", "field4", "field5", "field7", 
+                 "field10", "exclude.update",
+                 comparisons, 
+                 "field16", "field28",
+                 "field50", "field56",
+                 
+                 "field8", "field9",
+                 
+                 "field68", "field69", "field70",
+                 "field71", 
+                 "exclude",
+                 
+                 "field74", "field75",
+                 "field76", "field77",
+
+                 "field80", "field81", 
+                 "field82", 
+                 paste("field", c(19:24), sep=""))
+
+
+dat.tofile = dat.orig[, vars.to.keep]
+
+dim(dat.tofile) # currently 61 by 37
+
+
+# Note: to make the matching variable names \unc.grad.school\misc\practicum\bpsr\documentation\online-forms\bpsr-full-review-preview-online-form-20151101-p4.pdf, ..-p3.pdf, etc...
+# Also used my data dictionary, titled, "var.vals.html".
+# Lastly, referred to a scanned copy of the full text review: full_text_review_form_051915.docx
+# ...................................................................
+
+colnames(dat.tofile)
+revised.vars.to.keep = c("reviewer", "date of review", "revised entry?", "id", "first author",
+                         "year", "reproducibility", "revised exclude status", "comparison clinic to ambulatory", "comparison clinic to home",
+                         "comparison of home to ambulatory", "comparison of clinic to automated office", "comparison of automat. office to amb.", "reproducibility. how far apart?", "8. setting for monitoring",
+                         "f1. no. of measurements: clinic|home|amb|other", "f7. mean of measurements: clinic|home|amb|other", "original. decision to exclude?", "original. reason to exclude", "g2. clinic vs home counts: yes/yes | yes/no | no/yes | no/no",
+                         "g2. clinic threshold sys", "g2. clinic threshold dias", "g2. home threshold sys", "updated. decision to exclude?", "g3. clinic vs abpm counts: yes/yes | yes/no | no/yes | no/no",
+                         "g3. clinic threshold sys", "g3. abpm threshold sys", "g3. abpm threshold dias", "g4. home vs abpm counts: yes/yes | yes/no | no/yes | no/no", "g4. home threshold sys",
+                         "g4. abpm threshold sys", "Country of study", "2. Age (mean)", "2. Age (min)", "2. Age (max)", 
+                         "Sex (% female)", "Race/ethnicity")
+
+colnames(dat.tofile) = revised.vars.to.keep
+rownames(dat.tofile) = NULL
+
+dat.tofile$"g2. sensitivity" = ''
+dat.tofile$"g2. specificity" = ''
+
+dat.tofile$"g3. sensitivity" = ''
+dat.tofile$"g3. specificity" = ''
+
+dat.tofile$"g4. sensitivity" = ''
+dat.tofile$"g4. specificity" = ''
+
+last.vars = c("g2. sensitivity", "g2. specificity",
+         "g3. sensitivity", "g3. specificity",
+         "g4. sensitivity", "g4. specificity")
+
+# create data to rename columns back to original 'field' prefix
+crosswalk = cbind(vars.to.keep, revised.vars.to.keep)
+crosswalk
+
+# Write data to file that can be edited in excel
+#............................................................
+
+write.csv(dat.tofile, "C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.tofile.csv")
+
+# read edited file back in for tables
+# ....................................................
+
+# NOTE: when I try to read in directly from excel, via .xlsx structure,
+# I get very different fields that are hard to reconcile with original file.
+# If I use excel, I need to convert back to csv to make this work for rest of
+# programs that follow.
+
+dat.1 <- read.csv("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128-2.csv")
+dim(dat.1) # currently 61 by 44: 2015/11/29
+
+colnames(dat.1) = c("row.num", vars.to.keep, c("field113", "field114",
+                     "field115", "field116", "field117", "field118"))
+
+# make sure that the original file (pre-edits) that I read back in
+# has the same responses
+
+test1 = as.matrix(dat.1[,4:(ncol(dat.1)-6)])
+test2 = as.matrix( dat.orig[, vars.to.keep[3:length(vars.to.keep)]])
+
+colnames(test1)
+colnames(test2)
+ncol(test1)
+ncol(test2)
+
+compare(test1, test2) # these data frames match on everything.
 
 # Make a data frame only including those that were marked as include
 # (now including updated exclude variable. Should check for these entries.)
+# these are for tables 2, 4, and 6
 # ....................................................................
+
 dat.ts = dat.1[dat.1$exclude=="No",
                colnames(dat.1) %in% c("field1", "field2", "field3", "field4", "field5", "field7", 
                                       "field10", "exclude.update",
@@ -119,11 +217,11 @@ colnames(dat.ts)
 
 colnames(dat.ts) = c("reviewer", 
                      "date", "revision", "id", "author", "year",
-                     "reproduc",
+                     "reproduc",  "exclude.update",
                      "clinic.amb", "clinic.home", "home.amb",
                      "clinic.auto", "auto.amb", 
                      "far.apart", "setting",
-                     "num.meas", "mean.meas", "exclude.update")
+                     "num.meas", "mean.meas")
 
 head(dat.ts)
 table(dat.ts$reproduc) # 6 reproducibility studies

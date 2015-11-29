@@ -4,23 +4,29 @@ output: html_document
 ---
 
 ```{r prep9}
+
 # prep data for "Table 9. Reproducibility"
 names(dat.ts.long)
 
-compare.t9 = dat.ts.long[rep.table==1, ]
+compare.t9 = data.frame(dat.ts.long[rep.table==1, ])
 dim(compare.t9)
 colnames(compare.t9)
+class(compare.t9)
 
-compare.t9[,colnames(compare.t9) %in% c("author.year", "far.apart",
+compare.t9.sub = compare.t9[,colnames(compare.t9) %in% c("author.year", "far.apart",
                                       "type.measure",
                                       "type.descrip",
                                       "value")]
+colnames(compare.t9.sub)
 
-dt9 = dcast(compare.t9, author.year + far.apart ~ type.descrip + type.measure, 
+dt9 = dcast(compare.t9.sub, author.year + far.apart ~ type.descrip + type.measure, 
       value.var="value")
+dt9
 
 compare.t9$type.measure
 compare.t9$type.descrip
+
+with(compare.t9, table(type.measure, type.descrip))
 
 class(dt9)
 colnames(dt9)
