@@ -3,7 +3,6 @@ title: "Table 1"
 output: html_document
 ---
 
-
 ```{r}
 # Look at fields for Table 1: first author, year, study population,
 # comparison groups, Sample size, mean age (sd), age range, % women, % AA
@@ -47,22 +46,9 @@ dat.1.t1$comparison.groups = with(dat.1.t1,
                                         clinic.aoffice,
                                         aoffice.amb,
                                         sep="<p>"))
-dat.1.t1$comparison.groups
 
-
-dat.1.t1$race
-dat.1.t1$author
-dat.1.t1$min.age
-dat.1.t1$max.age
-dat.1.t1$mean.age
 
 names(dat.1.t1)
-
-
-test = ifelse(is.na(dat.1.t1$min.age)==T,1,0)
-test
-
-
 
 dat.1.t1 = within(dat.1.t1, {
   author.year = paste(author, year, sep=", ")
@@ -76,14 +62,19 @@ dat.1.t1 = within(dat.1.t1, {
 
 names(dat.1.t1)
 
-table1.dat = data.frame(dat.1.t1[,c(18, 14, 15, 17, 16)],
+table1.dat = data.frame(dat.1.t1[,c(18, 8, 15, 17, 16, 14)],
                         row.names=NULL)
+names(table1.dat)
+
+table1.dat = table1.dat[order(table1.dat$author.year),]
+
 colnames(table1.dat)
 colnames(table1.dat) = c("First author, Year",
-                         "Race/ethnicity",
+                         "Setting",
                          "Comparison groups",
                          "Age (mean), age range", 
-                         "Female (%)")
+                         "Female (%)",
+                         "Race/ethnicity")
 rownames(table1.dat)=NULL
 ```
 

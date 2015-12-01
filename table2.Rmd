@@ -24,6 +24,8 @@ dt2 = dcast(compare.t2, author.year ~ type.descrip + type.measure,
 class(dt2)
 colnames(dt2) = c("Author, year", "Count", "Mean",
                   "Count", "Mean")
+
+dt2 = dt2[order(dt2$`Author, year`),]
 ```
 
 ```{r, results='asis'}
