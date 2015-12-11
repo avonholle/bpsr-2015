@@ -25,12 +25,11 @@ library(compare)
 # Read in data
 setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
-dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-11-24.csv", # this particular file has hashtags instead of | to delimit values within one entry item
+dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-12-11.csv", # this particular file has hashtags instead of | to delimit values within one entry item
          head=T,
          sep=",")
 
 dim(dat.orig)
-
 
 # alter names from gravity form field labels -- too long
 
@@ -52,7 +51,6 @@ sapply(dat.orig, class) # look at class values for each field
 var.vals = cbind(cnames.short, cnames.short.2)
 rownames(var.vals)=NULL
 
-
 # Subset data for table 2 and data handling
 # ...........................................
 
@@ -61,7 +59,6 @@ comparisons = c("field11", # clinic to amb
                 "field13", # home to amb
                 "field14", # clinic to auto office
                 "field15") # auto office to amb
-
 
 # Revise the exclude variable to include those reviews done prior to 10/13/2015.
 # this date was before the exclude field was added to the gravity form.
@@ -180,7 +177,7 @@ write.csv(dat.tofile, "C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/
 # If I use excel, I need to convert back to csv to make this work for rest of
 # programs that follow.
 
-dat.1 <- read.csv("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128-2.csv")
+dat.1 <- read.csv("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128.csv")
 dim(dat.1) # currently 61 by 44: 2015/11/29
 
 colnames(dat.1) = c("row.num", vars.to.keep, c("field113", "field114",
