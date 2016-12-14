@@ -22,7 +22,8 @@ library(compare)
 
 ## @knitr part1
 
-# Read in data
+# Read in data obtained from the wordpress form at https://bpsr.web.unc.edu/full-text-review-form/
+# and handle the data to export to the google sheet at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing
 setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
 dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-12-11.csv", # this particular file has hashtags instead of | to delimit values within one entry item
@@ -31,7 +32,7 @@ dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-12-11.csv
 
 dim(dat.orig)
 
-# alter names from gravity form field labels -- too long
+# Alter names from gravity form field labels -- too long
 
 rownames(dat.orig)
 length(colnames(dat.orig))
@@ -39,8 +40,6 @@ length(colnames(dat.orig))
 cnames = colnames(dat.orig)
 cnames.short = sapply(cnames, function(x) {substr(x,0,40)})
 cnames.short.2 = paste("field", 1:length(cnames.short), sep="")
-
-cnames.short.2[1:10]
 
 colnames(dat.orig) = cnames.short.2
 length(colnames(dat.orig)) # verify 111.
@@ -101,6 +100,8 @@ as.data.frame(dat.orig.sub)[,colnames(dat.orig.sub) %in% c("field1","field3", "f
 
 dat.orig = as.data.frame(dat.orig.sub)
 
+head(dat.orig$field100) #add this field to google sheet, per Jonathan's request 12/13/2016
+
 # Create a file for export to google docs for future revisions (post-2015/11/28)
 # ..............................................................................
 
@@ -121,12 +122,13 @@ vars.to.keep = c("field1", "field2", "field3", "field4", "field5", "field7",
 
                  "field80", "field81", 
                  "field82", 
-                 paste("field", c(19:24), sep=""))
+                 paste("field", c(19:24), sep=""),
+                 "field100")
 
 
 dat.tofile = dat.orig[, vars.to.keep]
 
-dim(dat.tofile) # currently 61 by 37
+dim(dat.tofile) # currently 62 by 38
 
 
 # Note: to make the matching variable names \unc.grad.school\misc\practicum\bpsr\documentation\online-forms\bpsr-full-review-preview-online-form-20151101-p4.pdf, ..-p3.pdf, etc...
@@ -142,7 +144,7 @@ revised.vars.to.keep = c("reviewer", "date of review", "revised entry?", "id", "
                          "g2. clinic threshold sys", "g2. clinic threshold dias", "g2. home threshold sys", "updated. decision to exclude?", "g3. clinic vs abpm counts: yes/yes | yes/no | no/yes | no/no",
                          "g3. clinic threshold sys", "g3. abpm threshold sys", "g3. abpm threshold dias", "g4. home vs abpm counts: yes/yes | yes/no | no/yes | no/no", "g4. home threshold sys",
                          "g4. abpm threshold sys", "Country of study", "2. Age (mean)", "2. Age (min)", "2. Age (max)", 
-                         "Sex (% female)", "Race/ethnicity")
+                         "Sex (% female)", "Race/ethnicity", "Other comments")
 
 colnames(dat.tofile) = revised.vars.to.keep
 rownames(dat.tofile) = NULL
@@ -165,20 +167,26 @@ crosswalk = cbind(vars.to.keep, revised.vars.to.keep)
 crosswalk
 
 # Write data to file that can be edited in excel
+# This file is written to a google sheet that can be edited and followed with 'track revisions'
+# at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing (note this link is for viewing only)
 #............................................................
 
 write.csv(dat.tofile, "C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.tofile.csv")
 
-# read edited file back in for tables
+# IMPORTANT: read edited file back in for tables
 # ....................................................
 
 # NOTE: when I try to read in directly from excel, via .xlsx structure,
 # I get very different fields that are hard to reconcile with original file.
 # If I use excel, I need to convert back to csv to make this work for rest of
 # programs that follow.
+# This file is from the google doc at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing, 
+# which has been edited (from the doc in the write.csv directly above)
+# In google docs export as .csv file and place in folder listed below.
 
 dat.1 <- read.csv("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128.csv")
-dim(dat.1) # currently 61 by 44: 2015/11/29
+dim(dat.1) # currently 62 by 44: 2016/12/14
+colnames(dat.1)
 
 colnames(dat.1) = c("row.num", vars.to.keep, c("field113", "field114",
                      "field115", "field116", "field117", "field118"))

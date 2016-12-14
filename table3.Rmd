@@ -32,16 +32,18 @@ colnames(dat.t3) = c("author", "year",
 
 dat.t3[!(dat.t3$clinic.amb==""),] #check values
 
-dat.t3.sub = dat.t3[!(dat.t3$g3.table.nums=="" |
-                        dat.t3$g3.clinic.threshold.1=="" |
-                        dat.t3$g3.abpm.threshold.1=="" |
-                        dat.t3$g3.abpm.threshold.2==""),
+
+#                         dat.t3$g3.clinic.threshold.1=="" |
+#                         dat.t3$g3.abpm.threshold.1=="" |
+#                         dat.t3$g3.abpm.threshold.2==""
+
+
+dat.t3.sub = dat.t3[!(dat.t3$g3.table.nums==""), # only requirement to include for this table is if counts are included (will skip requirement that there are thresholds (code commented out above))
                     colnames(dat.t3) %in% c("author", "year",
                                             "g3.table.nums",
                                             "g3.clinic.threshold.1",
                                             "g3.abpm.threshold.1",
                                             "g3.abpm.threshold.2")]
-dat.t3.sub
 
 dat.t3.sub = within(dat.t3.sub, {
     author.year = paste(author, year, sep=", ")
