@@ -8,6 +8,8 @@ output: html_document
 
 # office vs abpm. Table 3 in part G of form.
 
+# NOTE: for descriptions of the columns selected below see 'variable-crosswalk.csv'
+
 # only include those that were marked as include
 dat.t3 = dat.1[dat.1$exclude=="No",
                  colnames(dat.1) %in% c("field5", "field7",
@@ -95,10 +97,10 @@ colnames(dat.t3.sub) = c("Author, Year",
                          "Clinic 1",
                                   "Clinic 2",
                                   "Home 1",
-                                  "abpm, no. Clinic, no.",
-                              "abpm, no. Clinic, yes.",
-                              "abpm, yes. Clinic, no.", 
-                              "abpm, yes. Clinic, yes")
+                                  "abpm, no. Clinic, yes.",
+                              "abpm, yes. Clinic, yes.",
+                              "abpm, no. Clinic, no.", 
+                              "abpm, yes. Clinic, no")
 
 
 dat.t3.sub

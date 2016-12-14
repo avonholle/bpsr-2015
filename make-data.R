@@ -32,6 +32,7 @@ dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-12-11.csv
 
 dim(dat.orig)
 
+
 # Alter names from gravity form field labels -- too long
 
 rownames(dat.orig)
@@ -50,8 +51,19 @@ sapply(dat.orig, class) # look at class values for each field
 var.vals = cbind(cnames.short, cnames.short.2)
 rownames(var.vals)=NULL
 
+# make a file with revised names to output for double checking work below
+names.out = data.frame( gravity.revised.name = cnames.short.2,
+                        gravity.short.name = cnames.short,
+                        gravity.full.name = cnames)
+rownames(names.out) = NULL
+head(names.out)
+write.csv(names.out, file="variable-crosswalk.csv")
+
+
 # Subset data for table 2 and data handling
 # ...........................................
+
+# NOTE: look at variable-crosswalk.csv to double check these values
 
 comparisons = c("field11", # clinic to amb
                 "field12", # clinic to home
@@ -137,16 +149,46 @@ dim(dat.tofile) # currently 62 by 38
 # ...................................................................
 
 colnames(dat.tofile)
-revised.vars.to.keep = c("reviewer", "date of review", "revised entry?", "id", "first author",
-                         "year", "reproducibility", "revised exclude status", "comparison clinic to ambulatory", "comparison clinic to home",
-                         "comparison of home to ambulatory", "comparison of clinic to automated office", "comparison of automat. office to amb.", "reproducibility. how far apart?", "8. setting for monitoring",
-                         "f1. no. of measurements: clinic|home|amb|other", "f7. mean of measurements: clinic|home|amb|other", "original. decision to exclude?", "original. reason to exclude", "g2. clinic vs home counts: yes/yes | yes/no | no/yes | no/no",
-                         "g2. clinic threshold sys", "g2. clinic threshold dias", "g2. home threshold sys", "updated. decision to exclude?", "g3. clinic vs abpm counts: yes/yes | yes/no | no/yes | no/no",
-                         "g3. clinic threshold sys", "g3. abpm threshold sys", "g3. abpm threshold dias", "g4. home vs abpm counts: yes/yes | yes/no | no/yes | no/no", "g4. home threshold sys",
-                         "g4. abpm threshold sys", "Country of study", "2. Age (mean)", "2. Age (min)", "2. Age (max)", 
-                         "Sex (% female)", "Race/ethnicity", "Other comments")
+dat.tofile = rename(dat.tofile, 
+       c("field1"="reviewer",
+       "field2"="date of review",
+       "field3"="revised entry?",
+       "field4"="id", 
+       "field5"="first author",
+       "field7"="year", 
+       "field10"="reproducibility",
+       "exclude.update"="revised exclude status",
+       "field11"="comparison clinic to ambulatory",
+       "field12"="comparison clinic to home",
+       "field13"="comparison of home to ambulatory",
+       "field14"="comparison of clinic to automated office",
+       "field15"="comparison of automat. office to amb.",
+       "field16"="reproducibility. how far apart?",
+       "field28"="8. setting for monitoring office clinic setting",
+       "field50"="f1. no. of measurements: clinic|home|amb|other",
+       "field56"="f7. mean of measurements: clinic|home|amb|other",
+       "field8"="original. decision to exclude?", 
+       "field9"="original. reason to exclude",
+       "field68"="g2. clinic vs home counts: yes/no | yes/yes | no/no | no/yes",
+       "field69"="g2. clinic threshold sys|dia (1)",
+       "field70"="g2. clinic threshold sys|dia (2)", # note: there is an option on the form to add more entries. This happened with this field at least once.
+       "field71"="g2. home threshold sys|dia", 
+       "exclude"= "updated. decision to exclude?",
+       "field74"="g3. clinic|abpm counts: yes/no | yes/yes | no/no | no/yes",
+       "field75"="g3. clinic threshold sys|dia",
+       "field76"="g3. abpm threshold sys|dia (1)", 
+       "field77"="g3. abpm threshold sys|dia (2)",
+       "field80"="g4. home vs abpm counts: yes/no | yes/yes | no/no | no/yes",
+       "field81"="g4. home threshold sys|dia", 
+       "field82"= "g4. abpm threshold sys|dia",
+       "field19" = "Country of study",
+       "field20" = "2. Age (mean)",
+       "field21" = "2. Age (min)",
+       "field22" =  "2. Age (max)",  
+       "field23" = "Sex (% female)",
+       "field24" = "Race/ethnicity",
+       "field100" = "Additional comments"))
 
-colnames(dat.tofile) = revised.vars.to.keep
 rownames(dat.tofile) = NULL
 
 dat.tofile$"g2. sensitivity" = ''
@@ -162,15 +204,12 @@ last.vars = c("g2. sensitivity", "g2. specificity",
          "g3. sensitivity", "g3. specificity",
          "g4. sensitivity", "g4. specificity")
 
-# create data to rename columns back to original 'field' prefix
-crosswalk = cbind(vars.to.keep, revised.vars.to.keep)
-crosswalk
 
 # Write data to file that can be edited in excel
 # This file is written to a google sheet that can be edited and followed with 'track revisions'
 # at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing (note this link is for viewing only)
 #............................................................
-
+colnames(dat.tofile)
 write.csv(dat.tofile, "C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.tofile.csv")
 
 # IMPORTANT: read edited file back in for tables
