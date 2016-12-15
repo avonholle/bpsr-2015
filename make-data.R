@@ -57,7 +57,7 @@ names.out = data.frame( gravity.revised.name = cnames.short.2,
                         gravity.full.name = cnames)
 rownames(names.out) = NULL
 head(names.out)
-write.csv(names.out, file="C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/variable-crosswalk.csv")
+write.csv(names.out, file="C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/gravity-form/variable-crosswalk.csv")
 
 
 # Subset data for table 2 and data handling

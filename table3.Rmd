@@ -46,6 +46,16 @@ dat.t3.sub = dat.t3[!(dat.t3$g3.table.nums==""), # only requirement to include f
                                             "g3.clinic.threshold.1",
                                             "g3.abpm.threshold.1",
                                             "g3.abpm.threshold.2")]
+dat.t3.sub
+
+
+
+
+  num.meas.2 = with(dat.t3.sub, {ifelse(g3.table.nums=="", "|||", as.character(g3.table.nums))})
+  strsplit(num.meas.2, '|', fixed=TRUE)
+
+test = sub("\\|", "", dat.t3.sub$g3.table.nums); test
+sub('(_[A-Z]){2}$', '', 'A_B_C_D')
 
 dat.t3.sub = within(dat.t3.sub, {
     author.year = paste(author, year, sep=", ")
@@ -76,37 +86,38 @@ dat.t3.sub = within(dat.t3.sub, {
   cell.4 = num.2$X4
 })
 
-colnames(dat.t3.sub)
-dat.t3.sub$g3.table.nums
-
-
-dat.t3.sub = dat.t3.sub[,colnames(dat.t3.sub) %in% c("author.year", 
+dat.t3.sub2 = dat.t3.sub[,colnames(dat.t3.sub) %in% c("author.year", 
                                                      "cell.1",
-                                            "cell.2", "cell.3", "cell.4",                                               "g3.clinic.threshold.1",
+                                            "cell.2", "cell.3", "cell.4",  
+                                            "g3.clinic.threshold.1",
                                             "g3.abpm.threshold.1",
                                             "g3.abpm.threshold.2")]
+dat.t3.sub2
+num.cols = c("cell.1","cell.2", "cell.3", "cell.4")
+num.vars = colnames(dat.t3.sub2) %in% num.cols
 
 
-dat.t3.sub = within(dat.t3.sub, {
-  cell.1 = ifelse(cell.1 == "Not reported", NA, cell.1) # make percents and n
-  cell.tot = as.numeric(cell.1) + as.numeric(cell.2) + as.numeric(cell.3) + as.numeric(cell.4)
+# Convert cell numbers from character to numeric to make further calculations easier
+dat.t3.sub2[,num.vars ] <- sapply(dat.t3.sub2[, num.vars], function(x) {as.numeric(as.character(x))})
+sapply(dat.t3.sub2, class) #check
+dat.t3.sub2
+
+dat.t3.sub3 = within(dat.t3.sub2, {
+  cell.tot = cell.1 + cell.2 + cell.3 + cell.4
   cell.1.pct = paste0(round(100*as.numeric(cell.1)/cell.tot,1), " (", cell.1, ")")
   cell.2.pct = paste0(round(100*as.numeric(cell.2)/cell.tot,1), " (", cell.2, ")")
   cell.3.pct = paste0(round(100*as.numeric(cell.3)/cell.tot,1), " (", cell.3, ")")
   cell.4.pct = paste0(round(100*as.numeric(cell.4)/cell.tot,1), " (", cell.4, ")")
 })
 
-dat.t3.sub 
+dat.t3.sub3 
 
-colnames(dat.t3.sub)
-dim(dat.t3.sub)
-
-dat.t3.sub = dat.t3.sub[,c(8, 1, 2, 3, 12, 11, 10, 9)]
+dat.t3.sub = dat.t3.sub3[,c(8, 1, 2, 3, 12, 11, 10, 9)]
 colnames(dat.t3.sub)
 colnames(dat.t3.sub) = c("Author, Year",
                          "Clinic 1",
-                                  "Clinic 2",
-                                  "Home 1",
+                                  "ABPM (1)",
+                                  "ABPM (2)",
                                   "abpm, no. Clinic, yes.",
                               "abpm, yes. Clinic, yes.",
                               "abpm, no. Clinic, no.", 
