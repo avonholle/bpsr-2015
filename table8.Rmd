@@ -1,0 +1,162 @@
+---
+title: "Table 8. QUADAS'
+author: ""
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+
+```{r global_options8, include=F}
+# see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      echo=F, warning=FALSE, message=FALSE, 
+                      results='hide')
+
+require(knitr)
+library(reshape2)
+library(ggplot2)
+library(car)
+library(plyr)
+library(tables)
+library(data.table)
+library(htmlTable)
+
+library(ztable)
+options(ztable.type="html")
+#read_chunk('make-data.R') # call program that forms data frame
+
+```
+
+
+```{r prep8}
+# read in QUADAS data and provide a summary of all variables.
+
+setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
+
+dat.q.all = read.csv(file="quadas-2-2015-12-11.csv",
+         head=T,
+         sep=",")
+
+dim(dat.q.all)
+colnames(dat.q.all)
+sapply(dat.q.all, class)
+
+# take out excluded papers from full text review
+# file from make-data.R file
+include.ids = dat.ts$id
+
+# ids are in 2nd column for the quadas .csv file above
+
+dat.q = dat.q.all[dat.q.all$Paper.ID %in% include.ids,]
+nrow(dat.q);nrow(dat.q.all)
+
+```
+
+<!--
+NOTE: May need to exclude based on id from full text review data set.
+-->
+
+```{r prep8-2}
+#summary(dat.q[,c(7:10,14:16,18:21,23:27)]) # note: have to avoid the free text fields. something about utf characters.
+
+dat2 = dat.q[,c(7:10,14:16,18:21,23:27)] # short answer questions
+
+
+# see http://stackoverflow.com/questions/31007915/print-a-frequency-table-of-a-factor-with-kable-in-rmarkdown
+sapply(dat2, table)
+
+# convert resposes from long to short response with only one letter:
+# High = H
+# Low = L
+# Yes = Y
+# No = N
+# Unclear = U
+# ..........................................
+
+dat3 = as.data.frame(apply(dat2, 2, function(x) {
+  x = ifelse(x=="Yes", "Y",
+             ifelse(x=="No", "N",
+                    ifelse(x=="Unclear", "U",
+                           ifelse(x=="High", "H",
+                                  ifelse(x=="Low", "L", NA)))))
+}))
+
+class(dat3) # check
+table(dat3[,1]) # check
+colnames(dat3) # check
+
+# Use current variable names (you can evaluated in tables above) to make an abbreviated version for table
+# ..........................................................
+
+colnames(dat3) = c("Random", "Case-control", "Exclusion",
+                   "Selection", "Knowledge-index", "Threshold",
+                   "Concern-index", "Reference standard", "Knowledge-reference", 
+                   "Bias-index", "Reference-match", "Interval",
+                   "Reference-all", "Reference-same", "Include-all",
+                   "Flow")
+
+# 
+# sapply(dat2, function(x) {kable(data.frame(t(as.matrix(table(x)))))})
+# 
+# dt = data.table(dat2)
+# dt[, lapply(.SD, table, na.rm=TRUE) ] 
+```
+
+
+```{r, results='hide'}
+dat.4 = cbind("Author, Year"=paste(dat.q$First.Author,
+                                 dat.q$Publication.Year, 
+                                 sep=", "),
+            dat3)
+dat.4 = dat.4[order(dat.4$'Author, Year'),]
+rownames(dat.4)  = NULL
+
+kable(dat.4)
+```
+
+
+```{r, results='asis'}
+
+options(ztable.colnames.bold=TRUE)
+
+zt = ztable(dat.4,
+            zebra=2,
+            zebra.color = "platinum", 
+            caption="QUADAS 2 Quality Measures$^a$")
+
+print(zt)
+```
+$^a$ For responses, Y=Yes, N=No, U=Unclear, H=High, L=Low.
+NOTE: All studies included in this table, including ones excluded in full text reviews. Will need to delete manually.
+
+For questions as defined in [QUADAS-2](http://annals.org.libproxy.lib.unc.edu/article.aspx?articleid=474994), 
+
+**Random** = Was a consecutive or random sample of patients enrolled?,
+
+**Case-control** = Was a case-control design avoided?,
+Exclusion = Did the study avoid inappropriate exclusions?,
+
+**Selection** = Could the selection of patients have introduced bias? (RISK),
+
+**Knowledge-index** = "Were the index test results interpreted without knowledge of the results of the reference standard?",
+
+**Threshold** = If a threshold was used, was it pre-specified?,
+
+**Concern-index** = Is there concern that the index test, it's conduct or interpretation different from the review question (CONCERN)?,
+
+**Reference standard** = Is the reference standard likely to classify the target condition?,
+
+**Knowledge-reference** = Were the reference standard results interpreted without knowledge of the results of the index test?,
+
+**Bias-index** = Could the conduct or interpretation of the index test have introduced bias (RISK)?,
+
+**Reference-match** = Is there concern that the target condition as defined by the reference standard does not match the review question?,
+
+**Interval** = Was there an appropriate interval between index tests and reference standard?,
+
+**Reference-all** = Did all patients receive a reference standard?,
+
+**Reference-same** = Did patients receive the same reference standard?,
+
+**Include-all** = Were all patients included in the analysis?,
+Flow = Could the patient flow have introduced bias (RISK)?
