@@ -127,7 +127,6 @@ zt = ztable(dat.4,
 print(zt)
 ```
 $^a$ For responses, Y=Yes, N=No, U=Unclear, H=High, L=Low.
-NOTE: All studies included in this table, including ones excluded in full text reviews. Will need to delete manually.
 
 For questions as defined in [QUADAS-2](http://annals.org.libproxy.lib.unc.edu/article.aspx?articleid=474994), 
 
