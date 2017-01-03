@@ -1,14 +1,14 @@
 ---
 title: "Tables 1-11"
 author: ''
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
   html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 4
+    number_sections: yes
     theme: united
-    number_sections: true
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 ---
 
 ```{r global_options, echo=FALSE, warning=FALSE, message=FALSE,results='hide'}

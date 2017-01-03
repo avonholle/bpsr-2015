@@ -46,8 +46,9 @@ colnames(output)
 
 # create row group labels for ztable below
 types = unique(sub.10[,c(2:4)]); types
-types$lab = c( "3. Keep, updated$^a$", 
-              "4. Keep, original",
+types$lab = c( "3. Exclude, updated$^b$", 
+               '4. Include, updated$^a$',
+              "5. Keep, original",
               "2. Exclude, original",
               "1. Exclude, updated$^a$"); types
 
@@ -75,3 +76,4 @@ zt = addrgroup(zt,
 print(zt)
 ```
 $^a$ These records were entered prior to 10/13/2015. They are considered for inclusion after evaluating presence of values entered for relevant tables.
+$^b$ Some of these records (Johansson and Mansoor were marked as exclude 1/3/2017 upon secondary review).
