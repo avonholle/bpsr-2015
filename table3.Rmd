@@ -19,7 +19,9 @@ dat.t3 = dat.1[dat.1$exclude=="No",
                                         "exclude")]
 
 colnames(dat.t3)
+table(dat.t3$field4)
 dim(dat.t3)
+
 
 # Note: daytime and nighttime abpm means were not on form.
 #       Need to (add field?) go back and get that information
