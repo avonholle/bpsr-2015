@@ -104,3 +104,48 @@ The comparison across methods were by correlation statistics; ""Correlations bet
 60,Alan Hinderliter,10/13/2015,,12249,White,1994,,0,Comparison of clinic to ambulatory,,,,,NA,Secondary care,3 visits||96 maximum|,168/110||155/95|,No,,,,,,No,,,,,,,,Norway,43.7,23,65,15,Not specified,,,,,,,
 61,Dave Gaurav,10/14/2015,,12340,Cesana,1991,,0,Comparison of clinic to ambulatory,Comparison of clinic to home,Comparison of home to ambulatory,,,NA,Primary care,3||15 mins interval for 24 hours|,,No,,,,,,No,,,,,,,,Italy,NA,NA,NA,NA,,"This is methods paper, results are not reported.",,,,,,
 62,Shakia Tranece,9/9/2015,,12368,Zachariah,1990,,1,Comparison of clinic to ambulatory,,,,,NA,,,,,,,,,,Yes,,,,,,,,United States,NA,NA,NA,NA,,,,,,,,
+2,Shakia Tranece,7/6/2017,No,90,Nunan,2015,,0,,,Comparison of home to ambulatory,,,NA,Research visit,"7|2 readings, twice a day, used measurements from day 2 to day 7|every 30 mintues during day, every hour at night|",clinic 152.9/88.9 baseline 145.0/92.0|141.1/87.0|133.6/82.6|,No,,,140|90,,135|85,No,,,,,,,,United Kingdom,56,40,85,47,"Ethnic origin 
+ 
+  White 171 (90.4%) 
+ 
+  Asian 3 (1.6%)
+ 
+  Black 3 (1.6%)
+ 
+  Chinese 1 (0.5)
+ 
+  Other 4 (2.1%)","# of hypertensives 
+ 
+ Clinic BP 187 (94.0%)
+ 
+ Baseline BP 170 (84.2%)
+ 
+ Home BP 148 (72.9%)
+ 
+ ABP 109 (53.7%)
+ 
+ 
+ 
+ Clinic hypertension 140/90
+ 
+ baseline, home and ABP hypertension 135/85",,,,,,
+5,Shakia Tranece,7/6/2017,No,161,Una Martin,2015,,0,Comparison of clinic to ambulatory,,,,,NA,Research visit,6||24 hours (every half hour during the day and every hour at night)|,standard systolic 125 or casual BP 131/81||129/78|,No,,,,,,No,,,,,,,,United Kingdom,54.6,40,74,53.6,"White British 116 (40.1%) 
+ 
+ South Asian 97 (33.6%)
+ 
+ African Carribbean 76 (26.3%)",,,,,,,
+8,Shakia Tranece,7/7/2017,No,253,Hao-Min Cheng,2014,,0,,,,,,NA,,,,Yes,Oscillometric central blood pressure monitor compared to conventional cuff monitoring compared to invasive measured CBP,,,,,Yes,,,,,,,,,NA,NA,NA,NA,,,,,,,,
+11,Shakia Tranece,7/7/2017,No,548,Tyler Woodell,2016,,0,,,,,,NA,,,,Yes,"Participants on antihypertensive medication are included. 
+ 
+ Comparison of ambulatory BP to clinic BP is stratified by CKD status not by antihypertensive medication use (page 92).",,,,,Yes,,,,,,,,,NA,NA,NA,NA,,,,,,,,
+3,Ann Von Holle,7/19/2017,No,108,Banegas,2015,,0,Comparison of clinic to ambulatory,,,,,NA,Other (specify below),|3|unclear|,|137.8/74.0||,No,,,,,,No,,,,,,,,Spain,72,NA,NA,49.2,Sample from Spanish population. No race/ethnicity given other than country of origin.,"This study did many sensitivity analyses with blood pressure thresholds so the thresholds reported are from table 3, considered primary results. Also, I reported total, not stratified by medication use. The counts are stratified by medication use in table 3. Will need to be entered separately.
+ 
+ I entered days between home and ABPM measures as 0, but the actual number of days was not reported in the paper. This is an assumption.",,,,,,
+6,Ann Von Holle,7/25/2017,No,193,Her,2014,,0,,,,,,NA,,,,Yes,"The aim of this paper is to measure association between blood pressure and target organ damage (tod). Home, office and ambulatory blood pressure measures were taken for each individual, but no comparisons between these types of blood pressure measures exist in this paper -- only associations between blood pressure and tod stratified by type of blood pressure measure.",,,,,Yes,,,,,,,,,NA,NA,NA,NA,,,,,,,,
+9,Ann Von Holle,7/25/2017,No,257,Takah,2014,,0,Comparison of clinic to ambulatory,,,,,999,Secondary care,|3|76|,154.5/92.7||140.9/89.0|,No,,,,,,No,,,,,,,,Cameroon,51.6,NA,NA,37.6,Residents in Cameroon,This paper is not of high quality. Typos throughout.,,,,,,
+4,Jonathan Yun,7/26/2017,No,152,Grassi,2014,,0,,,,,,NA,,,,Yes,"office readings which were taken in a lab were taken with a mercury sphygmomanometer. although 24 hour ABPM was performed it was performed only once. therefore, study not eligible for any outcomes.",,,,,Yes,,,,,,,,,NA,NA,NA,NA,,No eligible outcomes; overall exclusion.,,,,,,
+7,Jonathan Yun,7/26/2017,No,252,Abbasi,2014,,0,,,,,,NA,,,,Yes,"does not mention if patients on or off HTN meds. all 50 patients were hemodialysis patients. measurements taken were pre-dialysis BP, post-dialysis BP, and 24 hour ABPM.",,,,,Yes,,,,,,,,,NA,NA,NA,NA,,,,,,,,
+10,Jonathan Yun,7/26/2017,No,266,Niessen,2013,,0,,,,,,NA,,,,Yes,results not reported separately for patients with a hx of HTN. so uncertain HTN med status.,,,,,Yes,,,,,,,,,NA,NA,NA,NA,,,,,,,,
+12,Ann Von Holle,7/26/2017,No,550,Tadic,2016,,0,Comparison of clinic to ambulatory,,,,,NA,Secondary care,2||64|,,No,,,,,,No,,,,,,,,Serbia and Montenegro,58,NA,NA,46,Residents of Serbia.,"This study grouped the people who had no elevated blood pressure with abpm into a group defined as 'normal blood pressure' (n=52). Because of this grouping, I cannot provide counts for those with no hypertension with abpm and clinical hypertension (yes/no).",,,,,,
+13,Jonathan Yun,7/26/2017,No,567,Krzesi?ski,2014,,0,,,,,,NA,,,,Yes,All data and analyses performed using measurements that were taken both before and after patients were taking BP meds.,,,,,Yes,,,,,,,,,NA,NA,NA,NA,,,,,,,,
+14,Ann Von Holle,,No,582,Gaudron,2016,,0,Comparison of clinic to ambulatory,,,,,NA,Research visit,2||80|,129/85||126/78|,No,,,,,,No,,,,,,,,Germany,51,NA,NA,54,German,"The primary aim of this research paper was to examine the prevalence of echocardiographic septal bulge and its relationship with hypertension. The counts for those with and without hypertension were no directly reported in the paper. I derived these counts from the people reported as having white coat or masked hypertension (14 and 11, respectively) in the discussion combined with total counts of those with hypertension in table 1 (41 for abpm or cet and 44 for clinic). Also worth noting that abpm and cet were combined to determine hypertension.",,,,,,

@@ -28,6 +28,9 @@ library(htmlTable)
 library(ztable)
 library(compare)
 options(ztable.type="html")
+```
+
+```{r}
 read_chunk('make-data.R') # call program that forms data frame
 ```
 

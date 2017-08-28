@@ -31,9 +31,9 @@ options(ztable.type="html")
 ```{r prep8}
 # read in QUADAS data and provide a summary of all variables.
 
-setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
+setwd("~/../Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 
-dat.q.all = read.csv(file="quadas-2-2015-12-11.csv",
+dat.q.all = read.csv(file="quadas-2-2017-08-28.csv",
          head=T,
          sep=",")
 

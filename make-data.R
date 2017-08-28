@@ -24,9 +24,9 @@ library(compare)
 
 # Read in data obtained from the wordpress form at https://bpsr.web.unc.edu/full-text-review-form/
 # and handle the data to export to the google sheet at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing
-setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
-
-dat.orig = read.csv(file="full-text-review-form-08022015-revision-2015-12-11.csv", # this particular file has hashtags instead of | to delimit values within one entry item
+#setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
+setwd("~/../Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
+dat.orig = read.csv(file="full-text-review-form-08022015-revision-2017-07-27-full.csv", # this particular file has hashtags instead of | to delimit values within one entry item
          head=T,
          sep=",")
 
@@ -57,7 +57,7 @@ names.out = data.frame( gravity.revised.name = cnames.short.2,
                         gravity.full.name = cnames)
 rownames(names.out) = NULL
 head(names.out)
-write.csv(names.out, file="C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/gravity-form/variable-crosswalk.csv")
+write.csv(names.out, file="~/../Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/gravity-form/variable-crosswalk.csv")
 
 
 # Subset data for table 2 and data handling
@@ -210,7 +210,7 @@ last.vars = c("g2. sensitivity", "g2. specificity",
 # at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing (note this link is for viewing only)
 #............................................................
 colnames(dat.tofile)
-write.csv(dat.tofile, "C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.tofile.csv")
+write.csv(dat.tofile, "~/../Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.tofile.csv")
 
 # IMPORTANT: read edited file back in for tables
 # ....................................................
@@ -223,8 +223,10 @@ write.csv(dat.tofile, "C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/
 # which has been edited (from the doc in the write.csv directly above)
 # In google docs export as .csv file and place in folder listed below.
 
-dat.1 <- read.csv("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128.csv")
+dat.1 <- read.csv("~/../Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128-2.csv")
+# NOTE: the dat.20151128-2.csv file has updated entries from 2017
 dim(dat.1) # currently 62 by 44: 2016/12/14
+           # now 75 by 45: 2017/08/28
 colnames(dat.1)
 
 colnames(dat.1) = c("row.num", vars.to.keep, c("field113", "field114",
