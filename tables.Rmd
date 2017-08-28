@@ -34,6 +34,9 @@ options(ztable.type="html")
 read_chunk('make-data.R') # call program that forms data frame
 ```
 
+# Introduction
+
+The following tables are created from a series of R scripts, accessible at a [public github repository](https://github.com/avonholle/bpsr-2015). Data source is from data entered starting in 2015 at [http://bpsr.web.unc.edu/](http://bpsr.web.unc.edu/). The entire sequence of programs required to create this html document can be found in the [tables.Rmd](https://raw.githubusercontent.com/avonholle/bpsr-2015/main/tables.Rmd) document.
 
 <!--
 Note: all chunks have to have unique names, if there are names.
