@@ -59,7 +59,7 @@ NOTE: May need to exclude based on id from full text review data set.
 ```{r prep8-2}
 #summary(dat.q[,c(7:10,14:16,18:21,23:27)]) # note: have to avoid the free text fields. something about utf characters.
 
-dat2 = dat.q[,c(7:10,14:16,18:21,23:27)] # short answer questions
+dat2 = dat.q[,c(7:10,12,14:16,18:21,23:27)] # short answer questions
 
 
 # see http://stackoverflow.com/questions/31007915/print-a-frequency-table-of-a-factor-with-kable-in-rmarkdown
@@ -89,9 +89,9 @@ colnames(dat3) # check
 # ..........................................................
 
 colnames(dat3) = c("Random", "Case-control", "Exclusion",
-                   "Selection", "Knowledge-index", "Threshold",
+                   "Selection", "Concern-match", "Knowledge-index", "Threshold",
                    "Concern-index", "Reference standard", "Knowledge-reference", 
-                   "Bias-index", "Reference-match", "Interval",
+                   "Bias-index", "Reference-match",  "Interval",
                    "Reference-all", "Reference-same", "Include-all",
                    "Flow")
 
@@ -136,6 +136,8 @@ For questions as defined in [QUADAS-2](http://annals.org.libproxy.lib.unc.edu/ar
 Exclusion = Did the study avoid inappropriate exclusions?,
 
 **Selection** = Could the selection of patients have introduced bias? (RISK),
+
+**Concern-match** = Are there concerns that the included patients do not match the review question?
 
 **Knowledge-index** = "Were the index test results interpreted without knowledge of the results of the reference standard?",
 
