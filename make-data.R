@@ -26,12 +26,12 @@ library(compare)
 # and handle the data to export to the google sheet at https://docs.google.com/spreadsheets/d/11vikKzexfVU3hAoyXaUB4MO4gHUPJxT-nlw6j2azVYY/edit?usp=sharing
 #setwd("C:/Users/vonholle/Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
 setwd("~/../Dropbox/unc.grad.school/misc/practicum/bpsr/backup")
-dat.orig = read.csv(file="full-text-review-form-08022015-revision-2017-07-27-full.csv", # this particular file has hashtags instead of | to delimit values within one entry item
-         head=T,
-         sep=",")
+dat.orig = read.csv(file="full-text-review-form-08022015-revision-2017-10-02-full.csv", # this particular file has hashtags instead of | to delimit values within one entry item
+                    head=T,
+                    sep=",")
 
 dim(dat.orig)
-
+dat.orig[1:10,1:8]
 
 # Alter names from gravity form field labels -- too long
 
@@ -92,25 +92,28 @@ dat.orig$exclude[dat.orig$field8 == ""] = ifelse(dat.orig$miss[dat.orig$field8 =
 with(dat.orig, table(exclude, miss, field8)) # check
 dim(dat.orig)
 
-# make an indicator for those entries that have an updated exclude variable.
+dat.orig[1:20,1:8]
 
-dat.orig$exclude.update=0
-dat.orig$exclude.update[dat.orig$field8 == ""] = 1
+
 
 # If the entry is a revision then take only the most recent revision and discard the rest
 # .......................................
+dat.orig = dat.orig[order(dat.orig$field4, dat.orig$field3),] # sort by paper id and whether it is revised (last date should be last)
+dat.orig[1:30, 1:4]
+dat.orig[dat.orig$field1=="Ann Von Holle",1:5]
+dt = data.table(dat.orig)
+dtu = data.frame(dt[, .SD[.N], by = c("field4")]) # select last row of each Author -- last entry 
 
-dat.orig = dat.orig[order(dat.orig$field4, dat.orig$field2),]
-dat.orig.dt = data.table(dat.orig, key="field4")
+dtu[dtu$field1=="Ann Von Holle",1:5]
+dat.orig.sub = dtu
 
-# see http://stats.stackexchange.com/questions/7884/fast-ways-in-r-to-get-the-first-row-of-a-data-frame-grouped-by-an-identifier
-dat.orig.sub = dat.orig.dt[J(unique(field4)), mult="last"]
-nrow(dat.orig)-nrow(dat.orig.sub) # 9 records taken out.
+# make an indicator for those entries that have an updated exclude variable.
+dat.orig.sub$exclude.update = with(dat.orig.sub, ifelse(dat.orig.sub$field8=="Yes", 1, 0))
+
 
 table(duplicated(dat.orig$field4)) # Check duplicated paper id? As of 11/24/2015 there are 9 duplicate ids
 as.data.frame(dat.orig.sub)[,colnames(dat.orig.sub) %in% c("field1","field3", "field4")] #check
 
-dat.orig = as.data.frame(dat.orig.sub)
 
 head(dat.orig$field100) #add this field to google sheet, per Jonathan's request 12/13/2016
 
@@ -131,16 +134,16 @@ vars.to.keep = c("field1", "field2", "field3", "field4", "field5", "field7",
                  
                  "field74", "field75",
                  "field76", "field77",
-
+                 
                  "field80", "field81", 
                  "field82", 
                  paste("field", c(19:24), sep=""),
                  "field100")
 
 
-dat.tofile = dat.orig[, vars.to.keep]
+dat.tofile = dat.orig.sub[, vars.to.keep]
 
-dim(dat.tofile) # currently 62 by 38
+dim(dat.tofile) # currently 75 by 38
 
 
 # Note: to make the matching variable names \unc.grad.school\misc\practicum\bpsr\documentation\online-forms\bpsr-full-review-preview-online-form-20151101-p4.pdf, ..-p3.pdf, etc...
@@ -150,44 +153,44 @@ dim(dat.tofile) # currently 62 by 38
 
 colnames(dat.tofile)
 dat.tofile = rename(dat.tofile, 
-       c("field1"="reviewer",
-       "field2"="date of review",
-       "field3"="revised entry?",
-       "field4"="id", 
-       "field5"="first author",
-       "field7"="year", 
-       "field10"="reproducibility",
-       "exclude.update"="revised exclude status",
-       "field11"="comparison clinic to ambulatory",
-       "field12"="comparison clinic to home",
-       "field13"="comparison of home to ambulatory",
-       "field14"="comparison of clinic to automated office",
-       "field15"="comparison of automat. office to amb.",
-       "field16"="reproducibility. how far apart?",
-       "field28"="8. setting for monitoring office clinic setting",
-       "field50"="f1. no. of measurements: clinic|home|amb|other",
-       "field56"="f7. mean of measurements: clinic|home|amb|other",
-       "field8"="original. decision to exclude?", 
-       "field9"="original. reason to exclude",
-       "field68"="g2. clinic vs home counts: yes/no | yes/yes | no/no | no/yes",
-       "field69"="g2. clinic threshold sys|dia (1)",
-       "field70"="g2. clinic threshold sys|dia (2)", # note: there is an option on the form to add more entries. This happened with this field at least once.
-       "field71"="g2. home threshold sys|dia", 
-       "exclude"= "updated. decision to exclude?",
-       "field74"="g3. clinic|abpm counts: yes/no | yes/yes | no/no | no/yes",
-       "field75"="g3. clinic threshold sys|dia",
-       "field76"="g3. abpm threshold sys|dia (1)", 
-       "field77"="g3. abpm threshold sys|dia (2)",
-       "field80"="g4. home vs abpm counts: yes/no | yes/yes | no/no | no/yes",
-       "field81"="g4. home threshold sys|dia", 
-       "field82"= "g4. abpm threshold sys|dia",
-       "field19" = "Country of study",
-       "field20" = "2. Age (mean)",
-       "field21" = "2. Age (min)",
-       "field22" =  "2. Age (max)",  
-       "field23" = "Sex (% female)",
-       "field24" = "Race/ethnicity",
-       "field100" = "Additional comments"))
+                    c("field1"="reviewer",
+                      "field2"="date of review",
+                      "field3"="revised entry?",
+                      "field4"="id", 
+                      "field5"="first author",
+                      "field7"="year", 
+                      "field10"="reproducibility",
+                      "exclude.update"="revised exclude status",
+                      "field11"="comparison clinic to ambulatory",
+                      "field12"="comparison clinic to home",
+                      "field13"="comparison of home to ambulatory",
+                      "field14"="comparison of clinic to automated office",
+                      "field15"="comparison of automat. office to amb.",
+                      "field16"="reproducibility. how far apart?",
+                      "field28"="8. setting for monitoring office clinic setting",
+                      "field50"="f1. no. of measurements: clinic|home|amb|other",
+                      "field56"="f7. mean of measurements: clinic|home|amb|other",
+                      "field8"="original. decision to exclude?", 
+                      "field9"="original. reason to exclude",
+                      "field68"="g2. clinic vs home counts: yes/no | yes/yes | no/no | no/yes",
+                      "field69"="g2. clinic threshold sys|dia (1)",
+                      "field70"="g2. clinic threshold sys|dia (2)", # note: there is an option on the form to add more entries. This happened with this field at least once.
+                      "field71"="g2. home threshold sys|dia", 
+                      "exclude"= "updated. decision to exclude?",
+                      "field74"="g3. clinic|abpm counts: yes/no | yes/yes | no/no | no/yes",
+                      "field75"="g3. clinic threshold sys|dia",
+                      "field76"="g3. abpm threshold sys|dia (1)", 
+                      "field77"="g3. abpm threshold sys|dia (2)",
+                      "field80"="g4. home vs abpm counts: yes/no | yes/yes | no/no | no/yes",
+                      "field81"="g4. home threshold sys|dia", 
+                      "field82"= "g4. abpm threshold sys|dia",
+                      "field19" = "Country of study",
+                      "field20" = "2. Age (mean)",
+                      "field21" = "2. Age (min)",
+                      "field22" =  "2. Age (max)",  
+                      "field23" = "Sex (% female)",
+                      "field24" = "Race/ethnicity",
+                      "field100" = "Additional comments"))
 
 rownames(dat.tofile) = NULL
 
@@ -201,8 +204,8 @@ dat.tofile$"g4. sensitivity" = ''
 dat.tofile$"g4. specificity" = ''
 
 last.vars = c("g2. sensitivity", "g2. specificity",
-         "g3. sensitivity", "g3. specificity",
-         "g4. sensitivity", "g4. specificity")
+              "g3. sensitivity", "g3. specificity",
+              "g4. sensitivity", "g4. specificity")
 
 
 # Write data to file that can be edited in excel
@@ -223,20 +226,20 @@ write.csv(dat.tofile, "~/../Dropbox/unc.grad.school/misc/practicum/bpsr/programs
 # which has been edited (from the doc in the write.csv directly above)
 # In google docs export as .csv file and place in folder listed below.
 
-dat.1 <- read.csv("~/../Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128-2.csv")
+dat.1 <- read.csv("~/../Dropbox/unc.grad.school/misc/practicum/bpsr/programs/bpsr-2015/dat/dat.20151128-3.csv")
 # NOTE: the dat.20151128-2.csv file has updated entries from 2017
-dim(dat.1) # currently 62 by 44: 2016/12/14
-           # now 75 by 45: 2017/08/28
+dim(dat.1) # currently 75 by 45: 2016/12/14
+# now 75 by 45: 2017/08/28
 colnames(dat.1)
 
 colnames(dat.1) = c("row.num", vars.to.keep, c("field113", "field114",
-                     "field115", "field116", "field117", "field118"))
+                                               "field115", "field116", "field117", "field118"))
 
 # make sure that the original file (pre-edits) that I read back in
 # has the same responses
 
 test1 = as.matrix(dat.1[,4:(ncol(dat.1)-6)])
-test2 = as.matrix( dat.orig[, vars.to.keep[3:length(vars.to.keep)]])
+test2 = as.matrix( dat.orig.sub[, vars.to.keep[3:length(vars.to.keep)]])
 
 colnames(test1)
 colnames(test2)
@@ -253,7 +256,7 @@ compare(test1, test2) # these data frames match on everything.
 dat.ts = dat.1[dat.1$exclude=="No",
                colnames(dat.1) %in% c("field1", "field2", "field3", "field4", "field5", "field7", 
                                       "field10", "exclude.update",
-                                       comparisons, 
+                                      comparisons, 
                                       "field16", "field28",
                                       "field50", "field56")]
 colnames(dat.ts)
@@ -281,7 +284,7 @@ head(dat.ts[dat.ts$id %in% c(10569),])
 
 dat.ts = within(dat.ts, {
   author.year = paste(author, year, sep=", ")
-   
+  
   rep.table = ifelse(substr(reproduc,1,1)=="R",1,0)
   
   # number of office bp measurements
@@ -298,8 +301,8 @@ dat.ts = within(dat.ts, {
   mean.2 = data.frame(t(do.call(cbind, l.1)))
   clinic.mean = mean.2$X1; home.mean = mean.2$X2; 
   amb.mean = mean.2$X3; other.mean = mean.2$X4
- # amb.mean = mean.2$X1; other.mean = mean.2$X4
-
+  # amb.mean = mean.2$X1; other.mean = mean.2$X4
+  
   # number of measurements
   # see http://stackoverflow.com/questions/12946883/strsplit-by-row-and-distribute-results-by-column-in-data-frame
   
@@ -310,7 +313,7 @@ dat.ts = within(dat.ts, {
   num.2 = data.frame(t(do.call(cbind, l)))
   clinic.num = num.2$X1; home.num = num.2$X2; 
   amb.num = num.2$X3; other.num = num.2$X4
-
+  
   # indicator variable for type of comparison
   clinic.amb.yes = ifelse(clinic.amb=="",0,1)
   clinic.home.yes = ifelse(clinic.home=="",0,1)

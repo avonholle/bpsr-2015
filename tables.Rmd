@@ -120,9 +120,10 @@ This needs to be revised to match table 2 from [doi: 10.1136/bmj.d3621](http://d
 
 ---
 
-# Table 10, summary of exclusion status, including papers that did not have an exclusion field (entered before 10/13/2015)
 
-```{r child = 'table10.Rmd'}
+```{r child = 'table10.Rmd', eval=F}
+# Table 10, summary of exclusion status, including papers that did not have an exclusion field (entered before 10/13/2015)
+# NOTE: need to go back and edit the labels. Excluded papers are correct, but the combos of before/after are not. maybe just get rid of this table?
 ```
 
 ---

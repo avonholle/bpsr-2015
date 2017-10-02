@@ -46,11 +46,13 @@ colnames(output)
 
 # create row group labels for ztable below
 types = unique(sub.10[,c(2:4)]); types
+
 types$lab = c( "3. Exclude, updated$^b$", 
                '4. Include, updated$^a$',
               "5. Keep, original",
               "2. Exclude, original",
-              "1. Exclude, updated$^a$"); types
+              "1. Exclude, updated$^a$",
+              "6. Exclude, updated2"); types
 
 output.2 = merge(output, types,
                by=c(colnames(sub.10[,c(2:4)])))
