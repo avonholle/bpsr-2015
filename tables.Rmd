@@ -1,0 +1,135 @@
+---
+title: "Tables 1-11"
+author: ''
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+---
+
+```{r global_options, echo=FALSE, warning=FALSE, message=FALSE,results='hide'}
+# see http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      echo=F, warning=FALSE, message=FALSE, 
+                      results='hide')
+
+require(knitr)
+library(reshape2)
+library(ggplot2)
+library(car)
+library(plyr)
+library(tables)
+library(data.table)
+library(htmlTable)
+library(ztable)
+library(compare)
+options(ztable.type="html")
+```
+
+```{r}
+read_chunk('make-data.R') # call program that forms data frame
+```
+
+# Introduction
+
+The following tables are created from a series of R scripts, accessible at a [public github repository](https://github.com/avonholle/bpsr-2015). Data source is from data entered starting in 2015 at [http://bpsr.web.unc.edu/](http://bpsr.web.unc.edu/). The entire sequence of programs required to create this html document can be found in the [tables.Rmd](https://raw.githubusercontent.com/avonholle/bpsr-2015/main/tables.Rmd) document.
+
+<!--
+Note: all chunks have to have unique names, if there are names.
+-->
+
+
+```{r part1} 
+# Read in data, dat.1, from the make-data.R program in options
+# Also make a long form data frame, dat.ts.long, for tables 2, 4, 6 and 9
+```
+
+```{r child = 'var.vals.Rmd', eval=FALSE}
+# create a data dictionary with abbreviated variable names.
+
+```
+
+---
+
+# Table 1
+
+```{r child = 'table1.Rmd'}
+```
+
+---
+
+# Table 2
+
+```{r child = 'table2.Rmd'}
+```
+
+---
+
+# Table 3
+
+```{r child = 'table3.Rmd'}
+```
+
+---
+
+# Table 4
+
+```{r child = 'table4.Rmd'}
+```
+
+---
+
+# Table 5
+
+```{r child = 'table5.Rmd'}
+```
+
+---
+
+# Table 6
+
+```{r child = 'table6.Rmd'}
+```
+
+---
+
+# Table 7
+
+```{r child = 'table7.Rmd'}
+```
+
+
+---
+
+# Table 8, preliminary QUADAS descriptives.
+
+This needs to be revised to match table 2 from [doi: 10.1136/bmj.d3621](http://dx.doi.org/10.1136/bmj.d3621)
+
+```{r child = 'table8.Rmd'}
+```
+
+
+# Table 9
+
+```{r child = 'table9.Rmd'}
+```
+
+---
+
+
+```{r child = 'table10.Rmd', eval=F}
+# Table 10, summary of exclusion status, including papers that did not have an exclusion field (entered before 10/13/2015)
+# NOTE: need to go back and edit the labels. Excluded papers are correct, but the combos of before/after are not. maybe just get rid of this table?
+```
+
+---
+
+# Table 11, table with reasons for exclusions
+
+```{r child = 'table11.Rmd'}
+```
+
